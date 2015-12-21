@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../I2u2.iml" filepath="$PROJECT_DIR$/../I2u2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/crosswalkwebview144334317arm.iml" filepath="$PROJECT_DIR$/crosswalkwebview144334317arm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../i2u2/i2u2.iml" filepath="$PROJECT_DIR$/../i2u2/i2u2.iml" />
+    </modules>
+  </component>
+</project>

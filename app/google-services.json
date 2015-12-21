@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_id": "i2u2child",
+    "project_number": "581824218511",
+    "name": "i2u2child"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581824218511:android:e3c59211ce3a70db",
+        "client_id": "android:keev.i2u2child",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "keev.i2u2child"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "581824218511-85do03vl3ikatkpm4j3i6obkktlrf70v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "keev.i2u2child",
+            "certificate_hash": "2A3A92F3D5807772852F5D4A56276C1562E545BB"
+          }
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-71590809-2"
+          }
+        },
+        "cloud_messaging_service": {
+          "status": 2,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 2,
+          "test_banner_ad_unit_id": "ca-app-pub-3940256099942544/6300978111",
+          "test_interstitial_ad_unit_id": "ca-app-pub-3940256099942544/1033173712"
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}

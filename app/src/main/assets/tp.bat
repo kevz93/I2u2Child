@@ -1,0 +1,1 @@
+chrome --allow-file-access-from-files file:///d:\i2u2Mainframe\I2u2\i2u2\src\main\assets/index.html

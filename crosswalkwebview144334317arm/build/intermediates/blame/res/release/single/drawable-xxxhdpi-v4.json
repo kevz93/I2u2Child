@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\drawable-xxxhdpi-v4\\verify_checkmark.png",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\drawable-xxxhdpi\\verify_checkmark.png"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\drawable-xxxhdpi-v4\\ic_menu_share_holo_light.png",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\drawable-xxxhdpi\\ic_menu_share_holo_light.png"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\drawable-xxxhdpi-v4\\ic_search.png",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\drawable-xxxhdpi\\ic_search.png"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\drawable-xxxhdpi-v4\\refresh_gray.png",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\drawable-xxxhdpi\\refresh_gray.png"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\drawable-xxxhdpi-v4\\ic_warning.png",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\drawable-xxxhdpi\\ic_warning.png"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\drawable-xxxhdpi-v4\\refresh_blue.png",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\drawable-xxxhdpi\\refresh_blue.png"
+    }
+]
