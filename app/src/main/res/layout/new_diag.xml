@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hi there ! Welcome to the i2u2 experience. Enter a unique name to get started (:"
+        android:id="@+id/diagTV"
+        android:layout_marginTop="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/inp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:digits="abcdefghijklmnopqrstuvwxyz1234567890"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lets Start!"
+        android:id="@+id/goButton"
+        android:layout_below="@+id/inp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:textStyle="normal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/eTV"
+        android:layout_below="@+id/diagTV"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ff0000" />
+</RelativeLayout>
