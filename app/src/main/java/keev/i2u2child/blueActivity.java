@@ -70,7 +70,7 @@ public class blueActivity extends AppCompatActivity {
             Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
             if (pairedDevices.size() > 0) {
                 for (BluetoothDevice device : pairedDevices) {
-                    if (device.getName().equals("HC-05")) {
+                    if (device.getName().equals("I2U2")) {
                         myTV.setText("Pair found. Now scanning for bot.");
                         botPaired = true;
                         break;
@@ -99,7 +99,7 @@ public class blueActivity extends AppCompatActivity {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 myTV.setText("Found :" + device.getName());
-                if (device.getName().equals("HC-05")) {
+                if (device.getName().equals("I2U2")) {
                     unregisterReceiver(mReceiver);
                     myTV.setText("i2u2 bot found. ^_^");
                     mBluetoothAdapter.cancelDiscovery();
@@ -146,7 +146,6 @@ public class blueActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
         mBluetoothAdapter.cancelDiscovery();
        // mBluetoothAdapter.disable();
     }

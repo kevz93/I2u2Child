@@ -28,12 +28,12 @@
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\drawable-hdpi\\refresh_blue.png"
     },
     {
-        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\drawable-hdpi-v4\\dropdown_popup_background_down.9.png",
-        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\drawable-hdpi\\dropdown_popup_background_down.9.png"
-    },
-    {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\drawable-hdpi-v4\\bubble.9.png",
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\drawable-hdpi\\bubble.9.png"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\drawable-hdpi-v4\\dropdown_popup_background_down.9.png",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\drawable-hdpi\\dropdown_popup_background_down.9.png"
     },
     {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\drawable-hdpi-v4\\refresh_gray.png",

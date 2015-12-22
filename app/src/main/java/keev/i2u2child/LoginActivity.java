@@ -41,7 +41,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
-        Intent botSelectIntent = new Intent(LoginActivity.this, xwalkActivity.class); //
+        Intent botSelectIntent = new Intent(LoginActivity.this, botSelectActivity.class); //
         botSelectIntent.putExtra(AUTH_DATA, jObject.toString());
         startActivity(botSelectIntent);
 

@@ -32,12 +32,12 @@
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\dropdown_popup_background_down.9.png"
     },
     {
-        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\refresh_blue.png",
-        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\refresh_blue.png"
-    },
-    {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\ic_warning.png",
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\ic_warning.png"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\refresh_blue.png",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\bundles\\debug\\res\\drawable-xhdpi-v4\\refresh_blue.png"
     },
     {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-xhdpi-v4\\refresh_gray.png",

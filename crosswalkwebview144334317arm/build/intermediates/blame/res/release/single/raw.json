@@ -8,12 +8,12 @@
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\messaging_api.js"
     },
     {
-        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\raw\\launch_screen_api.js",
-        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\launch_screen_api.js"
-    },
-    {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\raw\\icudtl.dat",
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\icudtl.dat"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\raw\\launch_screen_api.js",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\launch_screen_api.js"
     },
     {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\raw\\presentation_api.js",

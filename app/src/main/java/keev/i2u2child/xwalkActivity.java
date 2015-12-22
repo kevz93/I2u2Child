@@ -42,8 +42,8 @@ public class xwalkActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_xwalk);
         mXWalkView = (XWalkView) findViewById(R.id.activity_main);
-        mXWalkView.load("file:///android_asset/index.html", null);
         mXWalkView.addJavascriptInterface(new WebAppInterface(this), "Android");
+        mXWalkView.load("file:///android_asset/index.html", null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps screen on
        // global_context = this; //TODO: re-use later
 
@@ -53,7 +53,7 @@ public class xwalkActivity extends AppCompatActivity {
        Set<BluetoothDevice> pairedDevices = mAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
             for (BluetoothDevice bt : pairedDevices) {
-                if (bt.getName().equals("i2u2")) {
+                if (bt.getName().equals("I2U2")) {
                     device = bt;
                     break;
                 }
@@ -172,7 +172,6 @@ public class xwalkActivity extends AppCompatActivity {
                         ArduinoPacket = new String(encodedBytes, "US-ASCII");
                         Log.d(TAG,ArduinoPacket);
                         readBufferPosition = 0;
-
                     }
 
                 } catch (IOException e) {
@@ -214,9 +213,6 @@ public class xwalkActivity extends AppCompatActivity {
             }
         }
     }
-        public void command(String c){
-            mConnectedThread.write(c);
-        }
 
         public class WebAppInterface {
             Context mContext;
@@ -231,22 +227,23 @@ public class xwalkActivity extends AppCompatActivity {
             /**
              * Show a toast from the web page
              */
-            @JavascriptInterface
-            public String getAuthData() {
+            @org.xwalk.core.JavascriptInterface
+            public String getCallData() {
                 return call_data;
             }
 
-            @JavascriptInterface
+            @org.xwalk.core.JavascriptInterface
             public String getArduinoPacket() {
                 return ArduinoPacket;
             } // TODO: Return AndroidPacket here
 
-            @JavascriptInterface
-            public void send(String s) {
-                    command(s);
+            @org.xwalk.core.JavascriptInterface
+            public void Arduino(String s) {
+                Log.d(TAG, "OVERHERE!!!!!!!!!");
+                mConnectedThread.write(s);
+
             }
         }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var localVideo = document.querySelector('#localVideo');
     localVideo.volume = 0;
 
+   // var call_data = JSON.parse(Android.getCallData());
+    
+
       // DOM utilities
       var makePara = function (text) {
         var p = document.createElement('p');
@@ -278,9 +281,9 @@ document.addEventListener('DOMContentLoaded', function() {
             trace('In snap');
             snapshot();
         } else{
-            Android.showToast(event.data);
+            Android.Arduino(event.data);
         
-        var AndroidPacket = Android.returnArduinoPacket(); // Retrieve packet from Arduino
+        var AndroidPacket = Android.getArduinoPacket(); // Retrieve packet from Arduino
         send(AndroidPacket);
         }
     }
