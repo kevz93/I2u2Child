@@ -41,6 +41,7 @@ public class botSelectActivity extends AppCompatActivity {
     public String TAG = "keev.i2u2child.botSelectActivity";
     boolean newUser = false;
     boolean nameAvail = false;
+    private String botName;
     Map<String, Object> emailMap;
     Map<String, Object> botMap ;
     /**
@@ -135,12 +136,13 @@ public class botSelectActivity extends AppCompatActivity {
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG,"cllllliiickkkkk");
                 if(nameAvail) {
                     botMap.put("online",true);
-                    botref.child(inpName.getText().toString()).updateChildren(botMap);
+                    botName = inpName.getText().toString();
+                    botref.child(botName).updateChildren(botMap);
                     emailMap.put("online", true);
                     usersref.child(getAuth("email")).updateChildren(emailMap);
+                    newUser= false;
                     dialog.hide();
                 }
             }
@@ -149,11 +151,12 @@ public class botSelectActivity extends AppCompatActivity {
         inpName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 // you can call or do what you want with your EditText here
-                if (s.toString().length() > 5) {            //TODO: make a max limit too
+                if ((s.toString().length() > 5) && (s.toString().length()<10)) {            //TODO: make a max limit too
                     String name = s.toString();
                     botref.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
+                                goButton.setEnabled(false);
                             if (snapshot.getValue() == null) {
                                 errorTV.setTextColor(Color.rgb(0, 255, 0));
                                 errorTV.setText("Name available");
@@ -161,13 +164,10 @@ public class botSelectActivity extends AppCompatActivity {
                                 goButton.setEnabled(true);
                             } else {
                                 errorTV.setTextColor(Color.rgb(255, 0, 0));
-                                goButton.setEnabled(false);
                                 nameAvail = false;
                                 errorTV.setText("Name not available");
                             }
                         }
-
-
                         @Override
                         public void onCancelled(FirebaseError e) {
                         }
@@ -175,10 +175,9 @@ public class botSelectActivity extends AppCompatActivity {
                 } else {
                     errorTV.setTextColor(Color.rgb(255, 0, 0));
                     goButton.setEnabled(false);
-                    errorTV.setText("Please enter min 5 letters and avoid '#','@','!','%','$','&','*'");
+                    errorTV.setText("Please enter min 5 and max 10 letters and avoid '#','@','!','%','$','&','*'");
                 }
             }
-
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
@@ -227,6 +226,8 @@ public class botSelectActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         if(!newUser) {
+            botMap.put("online",false);
+            botref.child(botName).updateChildren(botMap);
             emailMap.put("online", false);
             usersref.child(getAuth("email")).updateChildren(emailMap);
         }
