@@ -12,19 +12,19 @@
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\device_capabilities_api.js"
     },
     {
-        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\debug\\raw\\contacts_api.js",
-        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\contacts_api.js"
-    },
-    {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\debug\\raw\\messaging_api.js",
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\messaging_api.js"
     },
     {
-        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\debug\\raw\\launch_screen_api.js",
-        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\launch_screen_api.js"
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\debug\\raw\\contacts_api.js",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\contacts_api.js"
     },
     {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\debug\\raw\\xwalk.pak",
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\xwalk.pak"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\debug\\raw\\launch_screen_api.js",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\raw\\launch_screen_api.js"
     }
 ]

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"  android:animateLayoutChanges="true">
 
     <TextView
         android:layout_width="wrap_content"
@@ -9,7 +9,9 @@
         android:id="@+id/diagTV"
         android:layout_marginTop="48dp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:alpha="0"
+        android:allowUndo="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -19,7 +21,8 @@
         android:id="@+id/inp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:digits="abcdefghijklmnopqrstuvwxyz1234567890"/>
+        android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
+        android:alpha="0" />
 
     <Button
         android:layout_width="wrap_content"
@@ -30,7 +33,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="36dp"
         style="?android:attr/borderlessButtonStyle"
-        android:textStyle="normal" />
+        android:textStyle="normal"
+        android:alpha="0" />
 
     <TextView
         android:layout_width="wrap_content"

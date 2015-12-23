@@ -28,11 +28,7 @@ public class blueActivity extends AppCompatActivity {
     private static final String TAG = "blueActivity";
     TextView myTV;
     BluetoothAdapter mBluetoothAdapter;
-    Thread workerThread;
 
-    byte[] readBuffer;
-    int readBufferPosition;
-    volatile boolean stopWorker;
     boolean botFound=false;
     boolean  botPaired = false;
     @Override
@@ -50,8 +46,7 @@ public class blueActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "woooooohoooooooooooooo", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                mBluetoothAdapter.cancelDiscovery();
-                mBluetoothAdapter.disable();
+//                mBluetoothAdapter.cancelDiscovery();
                 Intent loginIntent = new Intent(blueActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
             }
@@ -101,6 +96,7 @@ public class blueActivity extends AppCompatActivity {
                 myTV.setText("Found :" + device.getName());
                 if (device.getName().equals("I2U2")) {
                     unregisterReceiver(mReceiver);
+                    botFound = true;
                     myTV.setText("i2u2 bot found. ^_^");
                     mBluetoothAdapter.cancelDiscovery();
                     Log.v(TAG, "going next");
