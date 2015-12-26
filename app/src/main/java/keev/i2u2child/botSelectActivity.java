@@ -1,5 +1,6 @@
 package keev.i2u2child;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -46,6 +47,7 @@ import java.util.Map;
 
 public class botSelectActivity extends AppCompatActivity {
     private JSONObject auth_data;
+    public String CALL_DATA = "CALL_DATA";
     private Firebase usersref,botref;
     public String TAG = "keev.i2u2child.botSelectActivity";
     boolean newUser = true;
@@ -219,7 +221,7 @@ public class botSelectActivity extends AppCompatActivity {
         final Button addBotButton =(Button) findViewById(R.id.addBotbutton);
         botMap = new HashMap<String, Object>();
         emailMap = new HashMap<String, Object>();
-        accessTV.setText("Enter the bot name and associated email-ID to request access.");
+        accessTV.setText("Enter email-ID of your bud xD.");
         accessTV.animate().alpha(1f);
 
         newMail.addTextChangedListener(new TextWatcher() {
@@ -356,7 +358,10 @@ public class botSelectActivity extends AppCompatActivity {
             friendViewHolder.callFriendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO : pass intent here
+                    Intent xwalkActivityIntent = new Intent(botSelectActivity.this, xwalkActivity.class);
+                    String roomName = botName;
+                    xwalkActivityIntent.putExtra(CALL_DATA, roomName);
+                    startActivity(xwalkActivityIntent);
                 }
             });
         }

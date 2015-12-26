@@ -45,7 +45,8 @@
         <activity
             android:name=".botSelectActivity"
             android:label="@string/title_activity_bot_select"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="sensorLandscape"/>
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data

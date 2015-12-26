@@ -30,6 +30,7 @@ public class xwalkActivity extends AppCompatActivity {
     public ConnectThread mConnectThread;
     public ConnectedThread mConnectedThread;
     private String ArduinoPacket;
+    private String roomName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +39,8 @@ public class xwalkActivity extends AppCompatActivity {
         //Get prev intent message :
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
-            call_data = extras.getString("CALL_DATA");
+            roomName = extras.getString("CALL_DATA");
+            call_data = roomName;
         }
         setContentView(R.layout.activity_xwalk);
         mXWalkView = (XWalkView) findViewById(R.id.activity_main);
@@ -241,7 +243,6 @@ public class xwalkActivity extends AppCompatActivity {
             public void Arduino(String s) {
                 Log.d(TAG, "OVERHERE!!!!!!!!!");
                 mConnectedThread.write(s);
-
             }
         }
     @Override

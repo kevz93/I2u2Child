@@ -10,9 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var remoteVideo = document.querySelector('#remoteVideo');
     var localVideo = document.querySelector('#localVideo');
     localVideo.volume = 0;
-
-   // var call_data = JSON.parse(Android.getCallData());
     
+    //var call_data = JSON.parse(Android.getCallData());
+    var call_data = Android.getCallData();
 
       // DOM utilities
       var makePara = function (text) {
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WEBRTC CORE SWAG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    var room = 'i2u21';
+    var room = call_data;
     var isChannelReady;
     var isInitiator = false;
     var isStarted = false;
