@@ -8,12 +8,12 @@
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\bundles\\debug\\res\\layout-v17\\date_time_suggestion.xml"
     },
     {
-        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-v17\\color_picker_advanced_component.xml",
-        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\bundles\\debug\\res\\layout-v17\\color_picker_advanced_component.xml"
-    },
-    {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-v17\\color_picker_dialog_content.xml",
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\bundles\\debug\\res\\layout-v17\\color_picker_dialog_content.xml"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-v17\\color_picker_advanced_component.xml",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\bundles\\debug\\res\\layout-v17\\color_picker_advanced_component.xml"
     },
     {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout-v17\\dropdown_item.xml",

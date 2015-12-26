@@ -14,11 +14,12 @@
             android:layout_height="fill_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/accessTV"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center|top"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="66dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:gravity="center|center_vertical|center_horizontal" />
     </LinearLayout>
 
     <LinearLayout
@@ -26,36 +27,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <EditText
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/newBot"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Bot Name"
-                    android:id="@+id/textView"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal" />
-            </LinearLayout>
-
-        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -73,7 +44,10 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:id="@+id/newMail"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:digits="abcdefghijklmnopqrstuvwxyz1234567890@.-_"
+                    android:hint="enter email here yo!"
+                    android:gravity="center" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -97,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Request Access"
-            android:id="@+id/addBot"
+            android:id="@+id/addBotbutton"
             android:gravity="center_vertical|center_horizontal"
             android:layout_gravity="center"
             style="?android:attr/borderlessButtonStyle"/>

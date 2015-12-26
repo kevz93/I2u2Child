@@ -55,6 +55,7 @@ public class botSelectActivity extends AppCompatActivity { //TODO : handle non n
     ViewFlipper vf;
     boolean botFound = false;
     boolean emailFound = false;
+    String addEmail,addBotName;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -62,42 +63,53 @@ public class botSelectActivity extends AppCompatActivity { //TODO : handle non n
     private GoogleApiClient client;
     public void addAccess(){
         vf.showNext();
-        EditText newBot = (EditText) findViewById(R.id.newBot);
-        EditText newMail = (EditText) findViewById(R.id.newMail);
+        final EditText newMail = (EditText) findViewById(R.id.newMail);
         final TextView accessTV = (TextView) findViewById(R.id.accessTV);
-        final Button addBotButton =(Button) findViewById(R.id.addBot);
+        final Button addBotButton =(Button) findViewById(R.id.addBotbutton);
+        botMap = new HashMap<String, Object>();
+        emailMap = new HashMap<String, Object>();
         accessTV.setText("Enter the bot name and associated email-ID to request access.");
         accessTV.animate().alpha(1f);
 
-        newBot.addTextChangedListener(new TextWatcher() {
+        newMail.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 accessTV.animate().alpha(0f);
                 addBotButton.setEnabled(false);
-                String name = s.toString();
-                botref.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+                final String name = s.toString();
+                Log.d(TAG,s.toString());
+                usersref.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        if (snapshot.getValue() == null) {
-                            accessTV.setTextColor(Color.rgb(0, 255, 0));
-                            accessTV.setText("No bot with that name yo!");
-                            botFound = false;
+                        if (!newMail.getText().toString().matches("")) {
+                            if (snapshot.hasChild(name.replace(".", ""))) {
+                                accessTV.setTextColor(Color.rgb(0, 255, 0));
+                                accessTV.setText("Found email");
+                                addEmail = name.replace(".", "");
+                                emailFound = true;
+                                accessTV.animate().alpha(1f);
+                                addBotButton.setEnabled(true);
+                            } else {
+                                addBotButton.setEnabled(false);
+                                accessTV.setTextColor(Color.rgb(255, 0, 0));
+                                accessTV.setText("linked email not found :(");
+                                emailFound = false;
+                                accessTV.animate().alpha(1f);
+                            }
+                        }
+                        if (newMail.getText().toString().matches("")){
                             addBotButton.setEnabled(false);
-                            accessTV.animate().alpha(1f);
-                        } else {
                             accessTV.setTextColor(Color.rgb(255, 0, 0));
-                            accessTV.setText("We found the bot!");
-                            botFound = true;
+                            accessTV.setText("linked email not found :(");
+                            emailFound = false;
                             accessTV.animate().alpha(1f);
                         }
-
-                        if (botFound&&emailFound)
-                            addBotButton.setEnabled(true);
                     }
 
                     @Override
                     public void onCancelled(FirebaseError e) {
                     }
                 });
+
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -106,11 +118,27 @@ public class botSelectActivity extends AppCompatActivity { //TODO : handle non n
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-
-
-
+        addBotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                usersref.child(addEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        emailMap.put(addEmail, true);
+                        emailMap.put(getAuth("email"), true);
+                        usersref.child(addEmail).child("friends").updateChildren(emailMap);
+                        usersref.child(getAuth("email")).child("friends").updateChildren(emailMap);
+                        vf.showPrevious();
+                    }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
+            }
+        });
 
     }
+
     private class startMain{
         private startMain(){
             final TextView mybotTV = (TextView) findViewById(R.id.myBotTV);
@@ -188,7 +216,6 @@ public class botSelectActivity extends AppCompatActivity { //TODO : handle non n
         usersref.child(getAuth("email")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-
                 if (snapshot.getValue() == null) {
                     Log.d(TAG, "null");
                     newUser = true;
@@ -202,7 +229,7 @@ public class botSelectActivity extends AppCompatActivity { //TODO : handle non n
               }
             @Override
             public void onCancelled(FirebaseError e) {
-
+                    Log.d(TAG,"Firebase error : "+ e);
             }
 
         });

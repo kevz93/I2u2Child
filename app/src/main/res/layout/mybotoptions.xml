@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_call_black_24dp"
+        android:src="@drawable/ic_call_black_48dp"
         android:layout_weight="1" />
 
     <Button
