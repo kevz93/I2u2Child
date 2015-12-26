@@ -24,12 +24,12 @@
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\layout\\color_picker_advanced_component.xml"
     },
     {
-        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\layout\\multi_field_time_picker_dialog.xml",
-        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\layout\\multi_field_time_picker_dialog.xml"
-    },
-    {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\layout\\two_field_date_picker.xml",
         "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\layout\\two_field_date_picker.xml"
+    },
+    {
+        "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\layout\\multi_field_time_picker_dialog.xml",
+        "source": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\src\\main\\res\\layout\\multi_field_time_picker_dialog.xml"
     },
     {
         "merged": "K:\\Users\\dell\\I2u2Child\\crosswalkwebview144334317arm\\build\\intermediates\\res\\merged\\release\\layout\\date_time_picker_dialog.xml",

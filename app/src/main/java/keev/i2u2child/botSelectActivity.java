@@ -1,7 +1,11 @@
 package keev.i2u2child;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -31,6 +36,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -194,7 +203,8 @@ public class botSelectActivity extends AppCompatActivity {
                     return auth_data.getString("email").replace(".", "");
                 case "name":
                     return auth_data.getString("displayName"); //TODO : should make real name ?
-
+                case "profileURL":
+                    return auth_data.getString("profileImageURL").replace("\\/", "/");
             }
         } catch (JSONException e) {
             Log.d(TAG, "JSON parse problem");
@@ -282,11 +292,11 @@ public class botSelectActivity extends AppCompatActivity {
 
 
     public class friend{
-        String friendName,email,status,botname;
+        String name,email,status,botname;
         String photoLink;
 
-        friend(String friendName, String email,String status,String botname, String photoLink) {
-            this.friendName = friendName;
+        friend(String name, String email,String status,String botname, String photoLink) {
+            this.name = name;
             this.email = email;
             this.status = status;
             this.botname = botname;
@@ -304,7 +314,7 @@ public class botSelectActivity extends AppCompatActivity {
             TextView friendMail;
             TextView friendStatus;
             TextView friendBot;
-            TextView personPhoto;
+            ImageView personPhoto;
 
             FriendViewHolder(View itemView) {
                 super(itemView);
@@ -313,7 +323,7 @@ public class botSelectActivity extends AppCompatActivity {
                 friendMail = (TextView)itemView.findViewById(R.id.friend_email);
                 friendStatus = (TextView)itemView.findViewById(R.id.friend_status);
                 friendBot = (TextView)itemView.findViewById(R.id.friendbot);
-                personPhoto = (TextView)itemView.findViewById(R.id.friend_photo);
+                personPhoto = (ImageView)itemView.findViewById(R.id.friend_photo);
             }
         }
         RVAdapter(List<friend> myFriendList){
@@ -328,10 +338,11 @@ public class botSelectActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(RVAdapter.FriendViewHolder friendViewHolder, int i) {
-            friendViewHolder.friendName.setText(myFriendList.get(i).friendName);
+            friendViewHolder.friendName.setText(myFriendList.get(i).name);
             friendViewHolder.friendMail.setText(myFriendList.get(i).email);
             friendViewHolder.friendStatus.setText(myFriendList.get(i).status);
-            friendViewHolder.personPhoto.setText(myFriendList.get(i).photoLink);
+            friendViewHolder.friendBot.setText(myFriendList.get(i).botname);
+            new ImageDownloaderTask(friendViewHolder.personPhoto).execute(myFriendList.get(i).photoLink);
         }
 
         @Override
@@ -345,22 +356,80 @@ public class botSelectActivity extends AppCompatActivity {
         }
 
     }
+        class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
+        private final WeakReference<ImageView> imageViewReference;
+
+        public ImageDownloaderTask(ImageView imageView) {
+            imageViewReference = new WeakReference<ImageView>(imageView);
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            return downloadBitmap(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (isCancelled()) {
+                bitmap = null;
+            }
+
+            if (imageViewReference != null) {
+                ImageView imageView = imageViewReference.get();
+                if (imageView != null) {
+                    if (bitmap != null) {
+                        imageView.setImageBitmap(bitmap);
+                    }
+//                     else {
+//                        Drawable placeholder = imageView.getContext().getResources().getDrawable(R.drawable.placeholder);
+//                        imageView.setImageDrawable(placeholder);
+//                    }
+                }
+            }
+        }
+    }
+
+    private Bitmap downloadBitmap(String url) {
+        HttpURLConnection urlConnection = null;
+        try {
+            URL uri = new URL(url);
+            urlConnection = (HttpURLConnection) uri.openConnection();
+            int statusCode = urlConnection.getResponseCode();
+            if (statusCode != HttpURLConnection.HTTP_OK) {
+                return null;
+            }
+
+            InputStream inputStream = urlConnection.getInputStream();
+            if (inputStream != null) {
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                return bitmap;
+            }
+        } catch (Exception e) {
+            urlConnection.disconnect();
+            Log.w("ImageDownloader", "Error downloading image from " + url);
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        return null;
+    }
     private void addDetails(final String email){
         Log.d("add details TAG",email);
         usersref.child(email).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String name = dataSnapshot.child("name").getValue().toString();
                 String status;
                 String botname;
-                status = (boolean)dataSnapshot.child(("online")).getValue()?"true":"false";
-
+                String name = dataSnapshot.child("name").getValue().toString();
+                String photoLink = dataSnapshot.child("profileURL").getValue().toString().replace("\\/", "/");
+                status = (boolean)dataSnapshot.child(("online")).getValue()?"Online":"Offline";
                 if (dataSnapshot.child("mybot").getValue() == null){
                     botname = "Your friend has not bot!";
                 } else {
                     botname = dataSnapshot.child("mybot").getValue().toString();
                 }
-                myFriendList.add(new friend(name, email, status, botname, "photolink"));
+                myFriendList.add(new friend(name, email, status, botname, photoLink));
                 RVAdapter adapter = new RVAdapter(myFriendList);
                 rv.setAdapter(adapter);
             }
@@ -403,6 +472,7 @@ public class botSelectActivity extends AppCompatActivity {
             emailMap.put("online", true);
             emailMap.put("id", getAuth("id"));
             emailMap.put("name", getAuth("name"));
+            emailMap.put("profileURL", getAuth("profileURL"));
             usersref.child(getAuth("email")).updateChildren(emailMap);
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
