@@ -1,27 +1,22 @@
 package keev.i2u2child;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -36,10 +31,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class botSelectActivity extends AppCompatActivity { //TODO : handle non new users
+public class botSelectActivity extends AppCompatActivity {
     private JSONObject auth_data;
     private Firebase usersref,botref;
     public String TAG = "keev.i2u2child.botSelectActivity";
@@ -50,17 +47,160 @@ public class botSelectActivity extends AppCompatActivity { //TODO : handle non n
     Map<String, Object> botMap = new HashMap<String, Object>();
     startMain foo;
     TextView tv;
+    RecyclerView rv;
     EditText inpName;
     Button goButton;
     ViewFlipper vf;
     boolean botFound = false;
     boolean emailFound = false;
-    String addEmail,addBotName;
+    String addEmail;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
+        setContentView(R.layout.bot_select_flipper);
+        usersref = new Firebase("https://i2u2robot.firebaseio.com/users/");
+        botref = new Firebase("https://i2u2robot.firebaseio.com/bots/");
+        rv = (RecyclerView)findViewById(R.id.rv);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            
+            try {
+                auth_data = new JSONObject(extras.getString("AUTH_DATA"));
+                Log.d(TAG,auth_data.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Malformed JSON object found");
+            }
+        }
+        inpName = (EditText) findViewById(R.id.inp);
+        goButton = (Button) findViewById(R.id.goButton);
+        tv = (TextView) findViewById(R.id.diagTV);
+        tv.animate().alpha(1.0f);
+        tv.setText("Welcome to i2u2 (:");
+        vf = (ViewFlipper) findViewById( R.id.viewFlipper );
+        vf.setInAnimation(AnimationUtils.loadAnimation(this,
+                android.R.anim.fade_in));
+        vf.setOutAnimation(AnimationUtils.loadAnimation(this,
+                android.R.anim.fade_out));
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        usersref.child(getAuth("email")).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.getValue() == null) {
+                    Log.d(TAG, "null");
+                    newUser = true;
+                    newDialogue();
+                } else {
+                    Log.d(TAG, "Not null");
+                    newUser = false;
+                    Log.d(TAG, snapshot.toString());
+                    foo = new startMain();
+                }
+              }
+            @Override
+            public void onCancelled(FirebaseError e) {
+                    Log.d(TAG,"Firebase error : "+ e);
+            }
+
+        });
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState){
+            super.onPostCreate(savedInstanceState);
+
+        }
+
+    public void newDialogue(){
+        final TextView errorTV = (TextView) findViewById(R.id.eTV);
+        tv.setText("Hi there ! Welcome to the i2u2 experience.\n Enter a unique name to get started (:");
+        tv.animate().alpha(1.0f);
+        goButton.animate().alpha(1.0f);
+        inpName.animate().alpha(1.0f);
+        goButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (nameAvail) {
+                    botName = inpName.getText().toString();
+                    botMap.put("owner", getAuth("email"));
+                    botref.child(botName).updateChildren(botMap);
+                    emailMap.put("online", true);
+                    emailMap.put("mybot",botName);
+                    emailMap.put("id", getAuth("id"));
+                    usersref.child(getAuth("email")).updateChildren(emailMap);
+                    newUser = false;
+                    foo = new startMain();
+                }
+            }
+        });
+        goButton.setEnabled(false);
+        inpName.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                goButton.setEnabled(false);
+                // you can call or do what you want with your EditText here
+                if ((s.toString().length() >= 5) && (s.toString().length() <= 10)) {
+                    String name = s.toString();
+                    botref.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot.getValue() == null) {
+                                errorTV.setTextColor(Color.rgb(0, 255, 0));
+                                errorTV.setText("Name available");
+                                nameAvail = true;
+                                goButton.setEnabled(true);
+                            } else {
+                                errorTV.setTextColor(Color.rgb(255, 0, 0));
+                                nameAvail = false;
+                                errorTV.setText("Name not available");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError e) {
+                        }
+                    });
+                } else {
+                    errorTV.setTextColor(Color.rgb(255, 0, 0));
+                    goButton.setEnabled(false);
+                    errorTV.setText("Please enter min 5 and max 10 letters and avoid '#','@','!','%','$','&','*'");
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+    }
+
+    public String getAuth(String auth) {
+        try {
+            switch (auth) {
+                case "id":
+                    return auth_data.getString("id");
+                case "email":
+                    return auth_data.getString("email").replace(".", "");
+                case "name":
+                    return auth_data.getString("displayName"); //TODO : should make real name ?
+
+            }
+        } catch (JSONException e) {
+            Log.d(TAG, "JSON parse problem");
+        }
+        return "null";
+    }
     public void addAccess(){
         vf.showNext();
         final EditText newMail = (EditText) findViewById(R.id.newMail);
@@ -139,13 +279,130 @@ public class botSelectActivity extends AppCompatActivity { //TODO : handle non n
 
     }
 
+
+
+    public class friend{
+        String friendName,email,status,botname;
+        String photoLink;
+
+        friend(String friendName, String email,String status,String botname, String photoLink) {
+            this.friendName = friendName;
+            this.email = email;
+            this.status = status;
+            this.botname = botname;
+            this.photoLink = photoLink;
+        }
+    }
+
+    private List<friend> myFriendList;
+
+    public class RVAdapter extends RecyclerView.Adapter<RVAdapter.FriendViewHolder>{
+        List<friend> myFriendList;
+        public class FriendViewHolder extends RecyclerView.ViewHolder {
+            CardView cv;
+            TextView friendName;
+            TextView friendMail;
+            TextView friendStatus;
+            TextView friendBot;
+            TextView personPhoto;
+
+            FriendViewHolder(View itemView) {
+                super(itemView);
+                cv = (CardView)itemView.findViewById(R.id.friendcv);
+                friendName = (TextView)itemView.findViewById(R.id.friend_name);
+                friendMail = (TextView)itemView.findViewById(R.id.friend_email);
+                friendStatus = (TextView)itemView.findViewById(R.id.friend_status);
+                friendBot = (TextView)itemView.findViewById(R.id.friendbot);
+                personPhoto = (TextView)itemView.findViewById(R.id.friend_photo);
+            }
+        }
+        RVAdapter(List<friend> myFriendList){
+            this.myFriendList = myFriendList;
+        }
+        @Override
+        public RVAdapter.FriendViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.friend_card, viewGroup, false);
+            FriendViewHolder fvh = new FriendViewHolder(v);
+            return fvh;
+        }
+
+        @Override
+        public void onBindViewHolder(RVAdapter.FriendViewHolder friendViewHolder, int i) {
+            friendViewHolder.friendName.setText(myFriendList.get(i).friendName);
+            friendViewHolder.friendMail.setText(myFriendList.get(i).email);
+            friendViewHolder.friendStatus.setText(myFriendList.get(i).status);
+            friendViewHolder.personPhoto.setText(myFriendList.get(i).photoLink);
+        }
+
+        @Override
+        public int getItemCount() {
+            return myFriendList.size();
+        }
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+        }
+
+    }
+    private void addDetails(final String email){
+        Log.d("add details TAG",email);
+        usersref.child(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String name = dataSnapshot.child("name").getValue().toString();
+                String status;
+                String botname;
+                status = (boolean)dataSnapshot.child(("online")).getValue()?"true":"false";
+
+                if (dataSnapshot.child("mybot").getValue() == null){
+                    botname = "Your friend has not bot!";
+                } else {
+                    botname = dataSnapshot.child("mybot").getValue().toString();
+                }
+                myFriendList.add(new friend(name, email, status, botname, "photolink"));
+                RVAdapter adapter = new RVAdapter(myFriendList);
+                rv.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+
+    }
+    private void getFriends(){
+        usersref.child(getAuth("email")).child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    String tempKey = d.getKey().toString();
+                    addDetails(tempKey);
+                    // about to drop mic....*corrected* dropped mic
+                    Log.d("snap ----", tempKey);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+    }
+
     private class startMain{
         private startMain(){
+            rv.setHasFixedSize(false); // true if the size is fixed -- better performance
+            vf.showNext();
             final TextView mybotTV = (TextView) findViewById(R.id.myBotTV);
             tv.animate().alpha(0.0f);
-            vf.showNext();
+            emailMap= new HashMap<>();
             emailMap.put("online", true);
             emailMap.put("id", getAuth("id"));
+            emailMap.put("name", getAuth("name"));
             usersref.child(getAuth("email")).updateChildren(emailMap);
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
@@ -153,10 +410,9 @@ public class botSelectActivity extends AppCompatActivity { //TODO : handle non n
                 public void onClick(View view) {
 //                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                            .setAction("Action", null).show();
-                   addAccess();
+                    addAccess();
                 }
             });
-
             usersref.child(getAuth("email")).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -177,153 +433,19 @@ public class botSelectActivity extends AppCompatActivity { //TODO : handle non n
             myBotCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                            myBotFlipper.showNext();
+                    myBotFlipper.showNext();
                 }
             });
-            }
-        }
+            LinearLayoutManager llm = new LinearLayoutManager(botSelectActivity.this); // TODO: try changing context
+            rv.setLayoutManager(llm);
+            myFriendList = new ArrayList<>();
+            getFriends();   //iterating and getting list update here bow chika wow wow
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Firebase.setAndroidContext(this);
-        setContentView(R.layout.bot_select_flipper);
-        usersref = new Firebase("https://i2u2robot.firebaseio.com/users/");
-        botref = new Firebase("https://i2u2robot.firebaseio.com/bots/");
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            
-            try {
-                auth_data = new JSONObject(extras.getString("AUTH_DATA"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Log.d(TAG, "Malformed JSON object found");
-            }
-        }
-        inpName = (EditText) findViewById(R.id.inp);
-        goButton = (Button) findViewById(R.id.goButton);
-        tv = (TextView) findViewById(R.id.diagTV);
-        tv.animate().alpha(1.0f);
-        tv.setText("Welcome to i2u2 (:");
-        vf = (ViewFlipper) findViewById( R.id.viewFlipper );
-        vf.setInAnimation(AnimationUtils.loadAnimation(this,
-                android.R.anim.fade_in));
-        vf.setOutAnimation(AnimationUtils.loadAnimation(this,
-                android.R.anim.fade_out));
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-        usersref.child(getAuth("email")).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.getValue() == null) {
-                    Log.d(TAG, "null");
-                    newUser = true;
-                    newDialogue();
-                } else {
-                    Log.d(TAG, "Not null");
-                    newUser = false;
-                    Log.d(TAG, snapshot.toString());
-                    foo = new startMain();
-                }
-              }
-            @Override
-            public void onCancelled(FirebaseError e) {
-                    Log.d(TAG,"Firebase error : "+ e);
-            }
-
-        });
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState){
-            super.onPostCreate(savedInstanceState);
-            Log.d(TAG, auth_data.toString());
-            try {
-                Log.d(TAG, auth_data.getString("id"));          //TODO: delete method here
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
+            //call the adapter to set info on the myFriendList ...kevin I think youre losing it =O
+            RVAdapter adapter = new RVAdapter(myFriendList);
+            rv.setAdapter(adapter);
 
         }
-
-    public void newDialogue(){
-        final TextView errorTV = (TextView) findViewById(R.id.eTV);
-        tv.setText("Hi there ! Welcome to the i2u2 experience.\n Enter a unique name to get started (:");
-        tv.animate().alpha(1.0f);
-        goButton.animate().alpha(1.0f);
-        inpName.animate().alpha(1.0f);
-        goButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (nameAvail) {
-                    botName = inpName.getText().toString();
-                    botMap.put("owner", getAuth("email"));
-                    botref.child(botName).updateChildren(botMap);  //TODO : update for non new users too
-                    emailMap.put("online", true);
-                    emailMap.put("mybot",botName);
-                    emailMap.put("id", getAuth("id"));
-                    usersref.child(getAuth("email")).updateChildren(emailMap);
-                    newUser = false;
-                    foo = new startMain();
-                }
-            }
-        });
-        goButton.setEnabled(false);
-        inpName.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-                goButton.setEnabled(false);
-                // you can call or do what you want with your EditText here
-                if ((s.toString().length() >= 5) && (s.toString().length() <= 10)) {
-                    String name = s.toString();
-                    botref.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            if (snapshot.getValue() == null) {
-                                errorTV.setTextColor(Color.rgb(0, 255, 0));
-                                errorTV.setText("Name available");
-                                nameAvail = true;
-                                goButton.setEnabled(true);
-                            } else {
-                                errorTV.setTextColor(Color.rgb(255, 0, 0));
-                                nameAvail = false;
-                                errorTV.setText("Name not available");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError e) {
-                        }
-                    });
-                } else {
-                    errorTV.setTextColor(Color.rgb(255, 0, 0));
-                    goButton.setEnabled(false);
-                    errorTV.setText("Please enter min 5 and max 10 letters and avoid '#','@','!','%','$','&','*'");
-                }
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-    }
-
-    public String getAuth(String auth) {
-        try {
-            switch (auth) {
-                case "id":
-                    return auth_data.getString("id");
-                case "email":
-                    return auth_data.getString("email").replace(".", "");
-
-            }
-        } catch (JSONException e) {
-            Log.d(TAG, "JSON parse problem");
-        }
-        return "null";
     }
 
     @Override
@@ -378,5 +500,7 @@ public class botSelectActivity extends AppCompatActivity { //TODO : handle non n
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        emailMap.put("online", false);
+        usersref.child(getAuth("email")).updateChildren(emailMap);
     }
 }
