@@ -40,7 +40,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/my_bot"
+            android:id="@+id/friend_status"
+            android:layout_toRightOf="@+id/my_photo"
+            android:layout_alignParentTop="true"
+            android:layout_weight="1"
+            android:textIsSelectable="false" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/friendbot"
             android:layout_toRightOf="@+id/my_photo"
             android:layout_below="@+id/my_name"
             android:layout_weight="1" />
@@ -48,7 +57,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/my_email"
+            android:id="@+id/friend_email"
             android:layout_weight="1" />
     </LinearLayout>
 </LinearLayout>

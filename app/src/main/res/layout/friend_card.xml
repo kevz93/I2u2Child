@@ -15,68 +15,14 @@
         android:animateLayoutChanges="true"
         card_view:contentPadding="10dp"
         android:layout_weight="1">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:baselineAligned="false">
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/friend_photo"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginRight="16dp"
-                        />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/friend_name"
-                        android:layout_toRightOf="@+id/friend_photo"
-                        android:layout_alignParentTop="true"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/friend_status"
-                        android:layout_toRightOf="@+id/friend_photo"
-                        android:layout_alignParentTop="true"
-                        android:layout_weight="1"
-                        android:textIsSelectable="false" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/friendbot"
-                        android:layout_toRightOf="@+id/friend_photo"
-                        android:layout_below="@+id/friend_name"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/friend_email"
-                        android:layout_weight="1" />
-                </LinearLayout>
-            </LinearLayout>
+        <ViewFlipper
+            android:id="@+id/friendFlipper"
+            android:layout_width="fill_parent"
+            android:animateLayoutChanges="true"
+            android:layout_height="fill_parent">
+            <include layout="@layout/friendbot"/>
+            <include layout="@layout/friendbotoptions"/>
+        </ViewFlipper>
     </android.support.v7.widget.CardView>
 
 </LinearLayout>

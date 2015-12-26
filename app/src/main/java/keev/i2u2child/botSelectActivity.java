@@ -3,7 +3,6 @@ package keev.i2u2child;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -59,10 +58,11 @@ public class botSelectActivity extends AppCompatActivity {
     RecyclerView rv;
     EditText inpName;
     Button goButton;
-    ViewFlipper vf;
+    ViewFlipper vf,vfList;
     boolean botFound = false;
     boolean emailFound = false;
     String addEmail;
+    boolean NOBOT = false;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -147,6 +147,7 @@ public class botSelectActivity extends AppCompatActivity {
                     emailMap.put("online", true);
                     emailMap.put("mybot",botName);
                     emailMap.put("id", getAuth("id"));
+                    emailMap.put("profileURL",getAuth("profileURL"));
                     usersref.child(getAuth("email")).updateChildren(emailMap);
                     newUser = false;
                     foo = new startMain();
@@ -315,15 +316,18 @@ public class botSelectActivity extends AppCompatActivity {
             TextView friendStatus;
             TextView friendBot;
             ImageView personPhoto;
-
+            ViewFlipper friendFlipper;
+            Button callFriendButton;
             FriendViewHolder(View itemView) {
                 super(itemView);
                 cv = (CardView)itemView.findViewById(R.id.friendcv);
-                friendName = (TextView)itemView.findViewById(R.id.friend_name);
+                friendName = (TextView)itemView.findViewById(R.id.my_name);
                 friendMail = (TextView)itemView.findViewById(R.id.friend_email);
                 friendStatus = (TextView)itemView.findViewById(R.id.friend_status);
                 friendBot = (TextView)itemView.findViewById(R.id.friendbot);
-                personPhoto = (ImageView)itemView.findViewById(R.id.friend_photo);
+                personPhoto = (ImageView)itemView.findViewById(R.id.my_photo);
+                friendFlipper =(ViewFlipper)itemView.findViewById(R.id.friendFlipper);
+                callFriendButton =(Button)itemView.findViewById(R.id.callfriendButton);
             }
         }
         RVAdapter(List<friend> myFriendList){
@@ -337,12 +341,24 @@ public class botSelectActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(RVAdapter.FriendViewHolder friendViewHolder, int i) {
+        public void onBindViewHolder(final RVAdapter.FriendViewHolder friendViewHolder, int i) {
             friendViewHolder.friendName.setText(myFriendList.get(i).name);
             friendViewHolder.friendMail.setText(myFriendList.get(i).email);
             friendViewHolder.friendStatus.setText(myFriendList.get(i).status);
             friendViewHolder.friendBot.setText(myFriendList.get(i).botname);
             new ImageDownloaderTask(friendViewHolder.personPhoto).execute(myFriendList.get(i).photoLink);
+            friendViewHolder.cv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    friendViewHolder.friendFlipper.showNext();
+                }
+            });
+            friendViewHolder.callFriendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO : pass intent here
+                }
+            });
         }
 
         @Override
@@ -464,9 +480,15 @@ public class botSelectActivity extends AppCompatActivity {
 
     private class startMain{
         private startMain(){
-            rv.setHasFixedSize(false); // true if the size is fixed -- better performance
+            rv.setHasFixedSize(false); // true only if the size is fixed -- better performance
             vf.showNext();
-            final TextView mybotTV = (TextView) findViewById(R.id.myBotTV);
+            final TextView mybotTV = (TextView) findViewById(R.id.my_bot);
+            TextView myNameTV = (TextView) findViewById(R.id.my_name);
+            TextView myEmailTV = (TextView) findViewById(R.id.my_email);
+            ImageView myPhotoTV = (ImageView) findViewById(R.id.my_photo);
+            new ImageDownloaderTask(myPhotoTV).execute(getAuth("profileURL"));
+            myEmailTV.setText(getAuth("email"));
+            myNameTV.setText(getAuth("name"));
             tv.animate().alpha(0.0f);
             emailMap= new HashMap<>();
             emailMap.put("online", true);
@@ -486,9 +508,15 @@ public class botSelectActivity extends AppCompatActivity {
             usersref.child(getAuth("email")).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    botName = dataSnapshot.child("mybot").getValue().toString();
-                    mybotTV.setText(botName);
+                    if(dataSnapshot.child("mybot").getValue()!=null) {
+                        botName = dataSnapshot.child("mybot").getValue().toString();
+                        mybotTV.setText(botName);
+                    }
+                    else {
+                        NOBOT = true;
+                        botName = "null";
+                        mybotTV.setText("You dont have a bot");
+                    }
                     mybotTV.animate().alpha(1f);
                 }
 
@@ -499,7 +527,7 @@ public class botSelectActivity extends AppCompatActivity {
             });
             final CardView myBotCard = (CardView) findViewById(R.id.mybotcard);
             final ViewFlipper myBotFlipper =(ViewFlipper) findViewById(R.id.myBotFlipper);
-            Button callmybotButton = (Button) findViewById(R.id.callmybotButton);
+            Button callmybotButton = (Button) findViewById(R.id.callmybotButton); //TODO:call throuch this button , add eventlistenr
             myBotCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
