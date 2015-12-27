@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:id="@+id/friendcv"
         android:layout_gravity="center"
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
+        android:layout_height="fill_parent"
         android:layout_margin="5dp"
         card_view:cardCornerRadius="2dp"
         android:foreground="?android:attr/selectableItemBackground"

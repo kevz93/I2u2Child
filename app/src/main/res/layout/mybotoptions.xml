@@ -7,15 +7,16 @@
 
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:id="@+id/imageView"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
         android:src="@drawable/ic_call_black_48dp"
+        android:scaleType="fitCenter"
         android:layout_weight="1" />
 
     <Button
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Connect"
         android:id="@+id/callmybotButton"

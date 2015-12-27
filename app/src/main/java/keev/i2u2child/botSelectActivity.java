@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 public class botSelectActivity extends AppCompatActivity {
+    private Intent xwalkActivityIntent;
     private JSONObject auth_data;
     public String CALL_DATA = "CALL_DATA";
     private Firebase usersref,botref;
@@ -230,18 +232,31 @@ public class botSelectActivity extends AppCompatActivity {
                 addBotButton.setEnabled(false);
                 final String name = s.toString();
                 Log.d(TAG,s.toString());
-                usersref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        if (!newMail.getText().toString().matches("")) {
-                            if (snapshot.hasChild(name.replace(".", ""))) {
-                                accessTV.setTextColor(Color.rgb(0, 255, 0));
-                                accessTV.setText("Found email");
-                                addEmail = name.replace(".", "");
-                                emailFound = true;
-                                accessTV.animate().alpha(1f);
-                                addBotButton.setEnabled(true);
-                            } else {
+                if(s.toString().equals(getAuth("email"))){
+                    accessTV.setText("Why would you add yourself silly! =P");
+                    accessTV.animate().alpha(1f);
+                }
+                 else{
+                    usersref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (!newMail.getText().toString().matches("")) {
+                                if (snapshot.hasChild(name.replace(".", ""))) {
+                                    accessTV.setTextColor(Color.rgb(0, 255, 0));
+                                    accessTV.setText("Found email");
+                                    addEmail = name.replace(".", "");
+                                    emailFound = true;
+                                    accessTV.animate().alpha(1f);
+                                    addBotButton.setEnabled(true);
+                                } else {
+                                    addBotButton.setEnabled(false);
+                                    accessTV.setTextColor(Color.rgb(255, 0, 0));
+                                    accessTV.setText("linked email not found :(");
+                                    emailFound = false;
+                                    accessTV.animate().alpha(1f);
+                                }
+                            }
+                            if (newMail.getText().toString().matches("")) {
                                 addBotButton.setEnabled(false);
                                 accessTV.setTextColor(Color.rgb(255, 0, 0));
                                 accessTV.setText("linked email not found :(");
@@ -249,20 +264,12 @@ public class botSelectActivity extends AppCompatActivity {
                                 accessTV.animate().alpha(1f);
                             }
                         }
-                        if (newMail.getText().toString().matches("")){
-                            addBotButton.setEnabled(false);
-                            accessTV.setTextColor(Color.rgb(255, 0, 0));
-                            accessTV.setText("linked email not found :(");
-                            emailFound = false;
-                            accessTV.animate().alpha(1f);
+
+                        @Override
+                        public void onCancelled(FirebaseError e) {
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError e) {
-                    }
-                });
-
+                    });
+                }
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -274,22 +281,13 @@ public class botSelectActivity extends AppCompatActivity {
         addBotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                usersref.child(addEmail).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
                         emailMap.put(addEmail, true);
                         emailMap.put(getAuth("email"), true);
                         usersref.child(addEmail).child("friends").updateChildren(emailMap);
                         usersref.child(getAuth("email")).child("friends").updateChildren(emailMap);
                         vf.showPrevious();
-                    }
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                    }
-                });
             }
         });
-
     }
 
 
@@ -358,7 +356,7 @@ public class botSelectActivity extends AppCompatActivity {
             friendViewHolder.callFriendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent xwalkActivityIntent = new Intent(botSelectActivity.this, xwalkActivity.class);
+                    xwalkActivityIntent = new Intent(botSelectActivity.this, xwalkActivity.class);
                     String roomName = botName;
                     xwalkActivityIntent.putExtra(CALL_DATA, roomName);
                     startActivity(xwalkActivityIntent);
@@ -375,9 +373,9 @@ public class botSelectActivity extends AppCompatActivity {
         public void onAttachedToRecyclerView(RecyclerView recyclerView) {
             super.onAttachedToRecyclerView(recyclerView);
         }
-
     }
-        class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
+
+    class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
         private final WeakReference<ImageView> imageViewReference;
 
         public ImageDownloaderTask(ImageView imageView) {
@@ -390,16 +388,16 @@ public class botSelectActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Bitmap bitmap) {
+        protected void onPostExecute(Bitmap d) {
             if (isCancelled()) {
-                bitmap = null;
+                d = null;
             }
 
             if (imageViewReference != null) {
                 ImageView imageView = imageViewReference.get();
                 if (imageView != null) {
-                    if (bitmap != null) {
-                        imageView.setImageBitmap(bitmap);
+                    if (d != null) {
+                        imageView.setImageBitmap(d);
                     }
 //                     else {
 //                        Drawable placeholder = imageView.getContext().getResources().getDrawable(R.drawable.placeholder);
@@ -422,7 +420,8 @@ public class botSelectActivity extends AppCompatActivity {
 
             InputStream inputStream = urlConnection.getInputStream();
             if (inputStream != null) {
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                //Drawable d = Drawable.createFromStream(inputStream, url);
+                Bitmap bitmap = BitmapFactory.decodeStream(inputStream); //-------------------if errors ? roll back to bitmap
                 return bitmap;
             }
         } catch (Exception e) {
@@ -533,9 +532,19 @@ public class botSelectActivity extends AppCompatActivity {
             final CardView myBotCard = (CardView) findViewById(R.id.mybotcard);
             final ViewFlipper myBotFlipper =(ViewFlipper) findViewById(R.id.myBotFlipper);
             Button callmybotButton = (Button) findViewById(R.id.callmybotButton); //TODO:call throuch this button , add eventlistenr
+            callmybotButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    xwalkActivityIntent = new Intent(botSelectActivity.this, xwalkActivity.class);
+                    String roomName = botName;
+                    xwalkActivityIntent.putExtra(CALL_DATA, roomName);
+                    startActivity(xwalkActivityIntent);
+                }
+            });
             myBotCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     myBotFlipper.showNext();
                 }
             });

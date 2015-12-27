@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="K:\Users\dell\I2u2Child\crosswalkwebview144334317arm\src\main\jniLibs"><file name="armeabi-v7a/libxwalkcore.so" path="K:\Users\dell\I2u2Child\crosswalkwebview144334317arm\src\main\jniLibs\armeabi-v7a\libxwalkcore.so"/></source></dataSet><dataSet config="release"><source path="K:\Users\dell\I2u2Child\crosswalkwebview144334317arm\src\release\jniLibs"/></dataSet></merger>

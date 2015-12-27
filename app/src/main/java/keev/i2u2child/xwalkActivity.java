@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-import android.webkit.JavascriptInterface;
 
 import org.xwalk.core.XWalkView;
 
@@ -31,7 +30,7 @@ public class xwalkActivity extends AppCompatActivity {
     public ConnectedThread mConnectedThread;
     private String ArduinoPacket;
     private String roomName;
-    private boolean BLUEBOOL = true;
+    private boolean BLUEBOOL = false;  // toggle for development
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,18 +52,20 @@ public class xwalkActivity extends AppCompatActivity {
         if (mAdapter == null) {
             Log.d("TAG","No bluetooth adapter available");
         }
-       Set<BluetoothDevice> pairedDevices = mAdapter.getBondedDevices();
-        if (pairedDevices.size() > 0) {
-            for (BluetoothDevice bt : pairedDevices) {
-                if (bt.getName().equals("I2U2")) {
-                    device = bt;
-                    break;
+        if(BLUEBOOL) {
+            Set<BluetoothDevice> pairedDevices = mAdapter.getBondedDevices();
+            if (pairedDevices.size() > 0) {
+                for (BluetoothDevice bt : pairedDevices) {
+                    if (bt.getName().equals("I2U2")) {
+                        device = bt;
+                        break;
+                    }
                 }
             }
+            // Start the thread to connect with the given device
+            mConnectThread = new ConnectThread(device);
+            mConnectThread.start();
         }
-        // Start the thread to connect with the given device
-        mConnectThread = new ConnectThread(device);
-        mConnectThread.start();
     }
 
     /**
