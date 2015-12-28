@@ -1,9 +1,16 @@
 package keev.i2u2child;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
@@ -66,7 +74,7 @@ public class botSelectActivity extends AppCompatActivity {
     boolean emailFound = false;
     String addEmail;
     boolean NOBOT = false;
-
+    ImageCropper cropper = new ImageCropper();
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -308,6 +316,8 @@ public class botSelectActivity extends AppCompatActivity {
 
     public class RVAdapter extends RecyclerView.Adapter<RVAdapter.FriendViewHolder>{
         List<friend> myFriendList;
+        private Context context;
+        private int lastPosition = -1;
         public class FriendViewHolder extends RecyclerView.ViewHolder {
             CardView cv;
             TextView friendName;
@@ -329,8 +339,9 @@ public class botSelectActivity extends AppCompatActivity {
                 callFriendButton =(Button)itemView.findViewById(R.id.callfriendButton);
             }
         }
-        RVAdapter(List<friend> myFriendList){
+        RVAdapter(List<friend> myFriendList,Context c){
             this.myFriendList = myFriendList;
+            this.context=c;
         }
         @Override
         public RVAdapter.FriendViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -361,6 +372,7 @@ public class botSelectActivity extends AppCompatActivity {
                     startActivity(xwalkActivityIntent);
                 }
             });
+            setAnimation(friendViewHolder.cv, i);
         }
 
         @Override
@@ -371,6 +383,39 @@ public class botSelectActivity extends AppCompatActivity {
         @Override
         public void onAttachedToRecyclerView(RecyclerView recyclerView) {
             super.onAttachedToRecyclerView(recyclerView);
+        }
+        private void setAnimation(View viewToAnimate, int position)
+        {
+            // If the bound view wasn't previously displayed on screen, it's animated
+            if (position > lastPosition)
+            {
+                Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+                viewToAnimate.startAnimation(animation);
+                lastPosition = position;
+            }
+        }
+    }
+
+    public class ImageCropper{
+        public Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
+            Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(output);
+
+            final int color = 0xff424242;
+            final Paint paint = new Paint();
+            final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            final RectF rectF = new RectF(rect);
+            final float roundPx = pixels;
+
+            paint.setAntiAlias(true);
+            canvas.drawARGB(0, 0, 0, 0);
+            paint.setColor(color);
+            canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, rect, rect, paint);
+
+            return output;
         }
     }
 
@@ -396,7 +441,8 @@ public class botSelectActivity extends AppCompatActivity {
                 ImageView imageView = imageViewReference.get();
                 if (imageView != null) {
                     if (d != null) {
-                        imageView.setImageBitmap(d);
+                        //cropper = new ImageCropper();
+                        imageView.setImageBitmap(cropper.getRoundedCornerBitmap(d,200));
                     }
 //                     else {
 //                        Drawable placeholder = imageView.getContext().getResources().getDrawable(R.drawable.placeholder);
@@ -449,7 +495,7 @@ public class botSelectActivity extends AppCompatActivity {
                     botname = dataSnapshot.child("mybot").getValue().toString();
                 }
                 myFriendList.add(new friend(name, email, status, botname, photoLink));
-                RVAdapter adapter = new RVAdapter(myFriendList);
+                RVAdapter adapter = new RVAdapter(myFriendList,botSelectActivity.this);
                 rv.setAdapter(adapter);
             }
 
@@ -553,7 +599,7 @@ public class botSelectActivity extends AppCompatActivity {
             getFriends();   //iterating and getting list update here bow chika wow wow
 
             //call the adapter to set info on the myFriendList ...kevin I think youre losing it =O
-            RVAdapter adapter = new RVAdapter(myFriendList);
+            RVAdapter adapter = new RVAdapter(myFriendList,botSelectActivity.this);
             rv.setAdapter(adapter);
 
         }

@@ -7,11 +7,11 @@
         android:layout_height="wrap_content"
         android:text="Hi there ! Welcome to the i2u2 experience. Enter a unique name to get started (:"
         android:id="@+id/diagTV"
-        android:layout_marginTop="48dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:alpha="0"
-        android:allowUndo="true" />
+        android:allowUndo="true"
+        android:layout_above="@+id/inp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="91dp" />
 
     <EditText
         android:layout_width="wrap_content"

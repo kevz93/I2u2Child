@@ -41,13 +41,14 @@
                 android:layout_weight="1">
 
                 <EditText
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:id="@+id/newMail"
                     android:layout_weight="1"
                     android:digits="abcdefghijklmnopqrstuvwxyz1234567890@.-_"
                     android:hint="enter email here yo!"
-                    android:gravity="center" />
+                    android:gravity="bottom"
+                    android:layout_gravity="center" />
 
                 <TextView
                     android:layout_width="fill_parent"
