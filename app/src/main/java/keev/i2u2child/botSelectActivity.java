@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -325,7 +324,7 @@ public class botSelectActivity extends AppCompatActivity {
                 friendMail = (TextView)itemView.findViewById(R.id.friend_email);
                 friendStatus = (TextView)itemView.findViewById(R.id.friend_status);
                 friendBot = (TextView)itemView.findViewById(R.id.friendbot);
-                personPhoto = (ImageView)itemView.findViewById(R.id.my_photo);
+                personPhoto = (ImageView)itemView.findViewById(R.id.friend_photo);
                 friendFlipper =(ViewFlipper)itemView.findViewById(R.id.friendFlipper);
                 callFriendButton =(Button)itemView.findViewById(R.id.callfriendButton);
             }

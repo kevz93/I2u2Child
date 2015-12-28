@@ -30,7 +30,7 @@ public class xwalkActivity extends AppCompatActivity {
     public ConnectedThread mConnectedThread;
     private String ArduinoPacket;
     private String roomName;
-    private boolean BLUEBOOL = false;  // toggle for development
+    private boolean BLUEBOOL = false;  //TODO toggle for development
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

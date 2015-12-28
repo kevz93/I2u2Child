@@ -14,13 +14,12 @@
         android:layout_weight="1">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/my_photo"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/friend_photo"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:focusable="false"
-            android:scaleType="fitCenter" />
+            android:focusable="false" />
 
     </LinearLayout>
 
@@ -34,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/my_name"
-            android:layout_toRightOf="@+id/my_photo"
+            android:layout_toRightOf="@+id/friend_photo"
             android:layout_alignParentTop="true"
             android:layout_weight="1" />
 
@@ -42,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/friend_status"
-            android:layout_toRightOf="@+id/my_photo"
+            android:layout_toRightOf="@+id/friend_photo"
             android:layout_alignParentTop="true"
             android:layout_weight="1"
             android:textIsSelectable="false" />
@@ -51,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/friendbot"
-            android:layout_toRightOf="@+id/my_photo"
+            android:layout_toRightOf="@+id/friend_photo"
             android:layout_below="@+id/my_name"
             android:layout_weight="1" />
 
