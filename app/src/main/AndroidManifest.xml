@@ -20,6 +20,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+        <service android:name=".SocketService1" />
         <activity
             android:name=".blueActivity"
             android:label="@string/app_name"

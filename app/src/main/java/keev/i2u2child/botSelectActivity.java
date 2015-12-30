@@ -1,7 +1,9 @@
 package keev.i2u2child;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,6 +16,7 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -31,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.firebase.client.DataSnapshot;
@@ -56,7 +60,8 @@ import java.util.Map;
 public class botSelectActivity extends AppCompatActivity {
     private Intent xwalkActivityIntent;
     private JSONObject auth_data;
-    public String CALL_DATA = "CALL_DATA";
+    private String CALL_DATA = "CALL_DATA";
+    private String USER_DATA= "USER_DATA";
     private Firebase usersref,botref;
     public String TAG = "keev.i2u2child.botSelectActivity";
     boolean newUser = true;
@@ -81,7 +86,6 @@ public class botSelectActivity extends AppCompatActivity {
      */
     private GoogleApiClient client;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +96,6 @@ public class botSelectActivity extends AppCompatActivity {
         rv = (RecyclerView)findViewById(R.id.rv);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            
             try {
                 auth_data = new JSONObject(extras.getString("AUTH_DATA"));
                 Log.d(TAG,auth_data.toString());
@@ -560,6 +563,7 @@ public class botSelectActivity extends AppCompatActivity {
                     if(dataSnapshot.child("mybot").getValue()!=null) {
                         botName = dataSnapshot.child("mybot").getValue().toString();
                         mybotTV.setText(botName);
+                        //startSocketService();
                     }
                     else {
                         NOBOT = true;
@@ -604,7 +608,28 @@ public class botSelectActivity extends AppCompatActivity {
 
         }
     }
+    public void startSocketService() {
+        // Service here
+        Intent ServiceIntent = new Intent(this, SocketService1.class);
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("email", getAuth("email"));
+            obj.put("botName",botName);
+        }catch(JSONException e){
+            // catch error--less likely
+        }
+        ServiceIntent.putExtra(USER_DATA, obj.toString());
+        this.startService(ServiceIntent);
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+    }
     @Override
     public void onStart() {
         super.onStart();

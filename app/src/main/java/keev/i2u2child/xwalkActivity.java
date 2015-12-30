@@ -4,11 +4,16 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.net.http.SslError;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.webkit.ValueCallback;
 
+import org.xwalk.core.XWalkResourceClient;
 import org.xwalk.core.XWalkView;
 
 import java.io.IOException;
@@ -18,13 +23,26 @@ import java.util.Set;
 import java.util.UUID;
 
 public class xwalkActivity extends AppCompatActivity {
+    private class MyResourceClient extends XWalkResourceClient {
+        public MyResourceClient(XWalkView view) {
+            super(view);
+        }
+
+        @Override
+        public void onReceivedSslError(XWalkView view,
+                                       ValueCallback<Boolean> callback, SslError error) {
+            callback.onReceiveValue(true);
+            Log.d("DEBUG", "onReceivedSslError");
+        }
+    }
+    MyResourceClient resourceClient;
     private final String TAG = "xwalkActivity";
     private XWalkView mXWalkView;
     public Context global_context;
     private String call_data;
     private String address = null;
     public BluetoothAdapter mAdapter = null;
-    public BluetoothSocket btSocket = null;
+    //public BluetoothSocket btSocket = null;
     private BluetoothDevice device =null;
     public ConnectThread mConnectThread;
     public ConnectedThread mConnectedThread;
@@ -35,7 +53,6 @@ public class xwalkActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAdapter = BluetoothAdapter.getDefaultAdapter();
-
         //Get prev intent message :
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
@@ -44,6 +61,9 @@ public class xwalkActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_xwalk);
         mXWalkView = (XWalkView) findViewById(R.id.activity_main);
+        Object error;
+        resourceClient =new MyResourceClient(mXWalkView);
+        mXWalkView.setResourceClient(resourceClient);
         mXWalkView.addJavascriptInterface(new WebAppInterface(this), "Android");
         mXWalkView.load("file:///android_asset/index.html", null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps screen on
@@ -67,7 +87,6 @@ public class xwalkActivity extends AppCompatActivity {
             mConnectThread.start();
         }
     }
-
 
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
@@ -123,6 +142,7 @@ public class xwalkActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      * This thread runs during a connection with a remote device.
      * It handles all incoming and outgoing transmissions.
@@ -170,10 +190,14 @@ public class xwalkActivity extends AppCompatActivity {
                         byte[] encodedBytes = new byte[readBufferPosition];
                         System.arraycopy(buffer, 0, encodedBytes, 0, encodedBytes.length);
                         ArduinoPacket = new String(encodedBytes, "US-ASCII");
-                        Log.d(TAG,ArduinoPacket);
+                        //Log.d(TAG,ArduinoPacket);
                         readBufferPosition = 0;
+                        try {
+                            sleep(50);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
-
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     // Start the service over to restart listening mode
@@ -246,9 +270,8 @@ public class xwalkActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
-            btSocket.close();
-        } catch (IOException e) { }
+        mConnectedThread.cancel();
+        mConnectThread.cancel();
 
     }
 }

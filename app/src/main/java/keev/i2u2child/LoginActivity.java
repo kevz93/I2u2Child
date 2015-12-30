@@ -76,10 +76,7 @@ public class LoginActivity extends FirebaseLoginBaseActivity {
         super.onCreate(savedInstanceState);
         Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_login);
-
-
         Button mLoginButton=(Button) findViewById(R.id.loginButton);
-
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

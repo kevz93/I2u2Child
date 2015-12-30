@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // PeerJS server location
-    var SERVER_IP = '52.25.117.107';
-    var SERVER_PORT = 9000;
 
     // DOM elements manipulated as user interacts with the app
     var messageBox = document.querySelector('#messages');
@@ -12,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     localVideo.volume = 0;
     
     //var call_data = JSON.parse(Android.getCallData());
-    var call_data = Android.getCallData();
+    var call_data = 'i2u2bot1';//Android.getCallData();
 
       // DOM utilities
       var makePara = function (text) {
@@ -91,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //var room = location.pathname.substring(1);
     //var room = 'foo';
 
-    var socket = io.connect('http://52.88.42.61:7070');
+    var socket = io.connect('https://signalling.i2u2robot.in:7080',{secure: true}); // test port 7070
 
     console.log('Creating or joining room ', room);
     socket.emit('create or join', room);
@@ -275,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dataChannel.onclose = handleReceiveChannelStateChange;
     }
 
+
     function handleMessage(event) {
         trace(event.data);
         if (event.data == 'snap') {
@@ -282,9 +280,6 @@ document.addEventListener('DOMContentLoaded', function() {
             snapshot();
         } else{
             Android.Arduino(event.data);
-        
-        var AndroidPacket = Android.getArduinoPacket(); // Retrieve packet from Arduino
-        send(AndroidPacket);
         }
     }
 
@@ -516,6 +511,8 @@ document.addEventListener('DOMContentLoaded', function() {
             SliceAndSend(imageData);  
     }
 }
+
+    
     function SliceAndSend(chunk) {
     var idata = {}; // data object to transmit over data channel
     //if (event) text = event.target.result; // on first invocation
@@ -545,6 +542,9 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('viewport height: ' + viewportheight +'::viewportwidth: '+ viewportwidth);
     // document.getElementById("videoContainer").style.width = viewportwidth + 'px';
     // document.getElementById("videoContainer").style.height = viewportheight + "px";
-
+    setInterval(function () { 
+        var AndroidPacket = Android.getArduinoPacket(); // Retrieve packet from Arduino
+        send(AndroidPacket);  
+    }, 1000)
 
 });
