@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     localVideo.volume = 0;
     
     //var call_data = JSON.parse(Android.getCallData());
-    var call_data = 'i2u2bot1';//Android.getCallData();
+    var call_data = 'i2u2bot1';// Android.getCallData();
 
       // DOM utilities
       var makePara = function (text) {
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //var room = location.pathname.substring(1);
     //var room = 'foo';
 
-    var socket = io.connect('https://signalling.i2u2robot.in:7080',{secure: true}); // test port 7070
+    var socket = io.connect('https://signalling.i2u2robot.in:7080'); // test port 7070
 
     console.log('Creating or joining room ', room);
     socket.emit('create or join', room);
@@ -107,7 +107,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     socket.on('join', function(room) {
         console.log('Another peer made a request to join room ' + room);
-
+        if(!blockMessage)
+        handleRemoteHangup();
         isChannelReady = true;
         console.log(' isChannelReady updated -->', isChannelReady);
 
@@ -272,7 +273,6 @@ document.addEventListener('DOMContentLoaded', function() {
         dataChannel.onclose = handleReceiveChannelStateChange;
     }
 
-
     function handleMessage(event) {
         trace(event.data);
         if (event.data == 'snap') {
@@ -280,6 +280,10 @@ document.addEventListener('DOMContentLoaded', function() {
             snapshot();
         } else{
             Android.Arduino(event.data);
+        
+        var AndroidPacket = Android.getArduinoPacket(); // Retrieve packet from Arduino
+        //console.log(AndroidPacket);
+        send(AndroidPacket);
         }
     }
 
@@ -496,10 +500,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var ctx = canvas.getContext('2d');
     canvas.setAttribute('width', 1280);
     canvas.setAttribute('height', 720);
-    
+    var sendingsnap = false;
 
     var chunkLength = 10000;
     function snapshot() {
+        sendingsnap = true;
         trace('Snapshot();');
         if (localStream != 'undefined') {
             trace('localstream not undefined');
@@ -511,8 +516,6 @@ document.addEventListener('DOMContentLoaded', function() {
             SliceAndSend(imageData);  
     }
 }
-
-    
     function SliceAndSend(chunk) {
     var idata = {}; // data object to transmit over data channel
     //if (event) text = event.target.result; // on first invocation
@@ -526,11 +529,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     idata.snap= true;
     send(idata); // use JSON.stringify for chrome!
-
     var remainingData = chunk.slice(idata.message.length);
     if (remainingData.length) setTimeout(function () {
         SliceAndSend(remainingData); // continue transmitting
     }, 10)
+        if(idata.snap==true)
+        sendingsnap = false;
 }
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------Viewport settings
@@ -543,8 +547,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // document.getElementById("videoContainer").style.width = viewportwidth + 'px';
     // document.getElementById("videoContainer").style.height = viewportheight + "px";
     setInterval(function () { 
+        if(isStarted&&!sendingsnap){
         var AndroidPacket = Android.getArduinoPacket(); // Retrieve packet from Arduino
         send(AndroidPacket);  
-    }, 1000)
+    }
+    }, 1000);
 
 });

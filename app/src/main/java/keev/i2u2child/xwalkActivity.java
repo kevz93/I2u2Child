@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.http.SslError;
+import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +33,6 @@ public class xwalkActivity extends AppCompatActivity {
         public void onReceivedSslError(XWalkView view,
                                        ValueCallback<Boolean> callback, SslError error) {
             callback.onReceiveValue(true);
-            Log.d("DEBUG", "onReceivedSslError");
         }
     }
     MyResourceClient resourceClient;
@@ -48,7 +48,9 @@ public class xwalkActivity extends AppCompatActivity {
     public ConnectedThread mConnectedThread;
     private String ArduinoPacket;
     private String roomName;
-    private boolean BLUEBOOL = false;  //TODO toggle for development
+    private boolean BLUEBOOL = true;  //TODO: toggle for development
+    PowerManager pm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,12 +58,12 @@ public class xwalkActivity extends AppCompatActivity {
         //Get prev intent message :
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
-            roomName = extras.getString("CALL_DATA");
+            roomName = extras.getString("CALL_DATA"); // use call data if json is used in future for more options
             call_data = roomName;
         }
+        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         setContentView(R.layout.activity_xwalk);
         mXWalkView = (XWalkView) findViewById(R.id.activity_main);
-        Object error;
         resourceClient =new MyResourceClient(mXWalkView);
         mXWalkView.setResourceClient(resourceClient);
         mXWalkView.addJavascriptInterface(new WebAppInterface(this), "Android");
@@ -270,8 +272,8 @@ public class xwalkActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mConnectedThread.cancel();
-        mConnectThread.cancel();
+//        mConnectedThread.cancel();
+//        mConnectThread.cancel();
 
     }
 }

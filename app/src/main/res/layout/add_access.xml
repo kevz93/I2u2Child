@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/login">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -41,13 +42,15 @@
                 android:layout_weight="1">
 
                 <EditText
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:id="@+id/newMail"
                     android:layout_weight="1"
                     android:hint="enter email here yo!"
                     android:gravity="center_horizontal|bottom"
-                    android:digits="abcdefghijklmnopqrstuvwxyz1234567890.-_@" />
+                    android:digits="abcdefghijklmnopqrstuvwxyz1234567890.-_@"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="#ffffff" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -56,7 +59,8 @@
                     android:text="Google Mail Address"
                     android:id="@+id/textView2"
                     android:layout_weight="1"
-                    android:gravity="center_vertical|center_horizontal" />
+                    android:gravity="center_vertical|center_horizontal"
+                    android:textColor="#ffffff" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -74,7 +78,8 @@
             android:id="@+id/addBotbutton"
             android:gravity="center_vertical|center_horizontal"
             android:layout_gravity="center"
-            style="?android:attr/borderlessButtonStyle"/>
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
 </LinearLayout>

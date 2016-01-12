@@ -23,7 +23,6 @@
         android:layout_margin="5dp"
         card_view:cardCornerRadius="2dp"
         android:foreground="?android:attr/selectableItemBackground"
-        android:animateLayoutChanges="false"
         card_view:contentPadding="10dp"
         android:layout_weight=".6"
         card_view:cardElevation="10dp"
@@ -54,7 +53,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rv"
-        android:layout_below="@+id/mybotcard"
         android:layout_weight=".4" />
 
 </LinearLayout>

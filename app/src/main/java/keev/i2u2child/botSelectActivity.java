@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -74,7 +75,7 @@ public class botSelectActivity extends AppCompatActivity {
     RecyclerView rv;
     EditText inpName;
     Button goButton;
-    ViewFlipper vf,vfList;
+    ViewFlipper vf;
     boolean botFound = false;
     boolean emailFound = false;
     String addEmail;
@@ -117,7 +118,7 @@ public class botSelectActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-        usersref.child(getAuth("email")).addListenerForSingleValueEvent(new ValueEventListener() {
+        usersref.child(getAuth("email")).child("mybot").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.getValue() == null) {
@@ -156,13 +157,17 @@ public class botSelectActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (nameAvail) {
                     botName = inpName.getText().toString();
-                    botMap.put("owner", getAuth("email"));
+                    botMap.put("owner", getAuth("name"));
+                    botMap.put("status", "online");
                     botref.child(botName).updateChildren(botMap);
-                    emailMap.put("online", true);
-                    emailMap.put("mybot",botName);
+                    emailMap.put("mybot", botName);
                     emailMap.put("id", getAuth("id"));
-                    emailMap.put("profileURL",getAuth("profileURL"));
+                    emailMap.put("profileURL", getAuth("profileURL"));
                     usersref.child(getAuth("email")).updateChildren(emailMap);
+                    emailMap= new HashMap<String, Object>();
+                    emailMap.put(getAuth("email"),botName);
+                    usersref.child(getAuth("email")).child("friends").updateChildren(emailMap);
+                    emailMap= new HashMap<String, Object>();
                     newUser = false;
                     foo = new startMain();
                 }
@@ -242,7 +247,7 @@ public class botSelectActivity extends AppCompatActivity {
                 addBotButton.setEnabled(false);
                 final String name = s.toString();
                 Log.d(TAG,s.toString());
-                if(s.toString().equals(getAuth("email"))){
+                if(s.toString().replace(".", "").equals(getAuth("email"))){
                     accessTV.setText("Why would you add yourself silly! =P");
                     accessTV.animate().alpha(1f);
                 }
@@ -269,7 +274,7 @@ public class botSelectActivity extends AppCompatActivity {
                             if (newMail.getText().toString().matches("")) {
                                 addBotButton.setEnabled(false);
                                 accessTV.setTextColor(Color.rgb(255, 0, 0));
-                                accessTV.setText("linked email not found :(");
+                                accessTV.setText("Enter address to allow access :");
                                 emailFound = false;
                                 accessTV.animate().alpha(1f);
                             }
@@ -291,25 +296,38 @@ public class botSelectActivity extends AppCompatActivity {
         addBotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        emailMap.put(addEmail, true);
-                        emailMap.put(getAuth("email"), true);
-                        usersref.child(addEmail).child("friends").updateChildren(emailMap);
+                usersref.child(addEmail).child("mybot").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getValue()== null) {
+                            emailMap.put(addEmail,"null");
+                        }
+                        else{
+                            emailMap.put(addEmail, dataSnapshot.getValue().toString());
+                        }
                         usersref.child(getAuth("email")).child("friends").updateChildren(emailMap);
-                        vf.showPrevious();
+                        emailMap = new HashMap<String, Object>();
+                        emailMap.put(getAuth("email"),botName);
+                        usersref.child(addEmail).child("friends").updateChildren(emailMap);
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
+                vf.showPrevious();
             }
         });
     }
 
 
-
     public class friend{
-        String name,email,status,botname;
+        String name,email,botname;
         String photoLink;
 
-        friend(String name, String email,String status,String botname, String photoLink) {
+        friend(String name, String email,String botname, String photoLink) {
             this.name = name;
             this.email = email;
-            this.status = status;
             this.botname = botname;
             this.photoLink = photoLink;
         }
@@ -325,7 +343,6 @@ public class botSelectActivity extends AppCompatActivity {
             CardView cv;
             TextView friendName;
             TextView friendMail;
-            TextView friendStatus;
             TextView friendBot;
             ImageView personPhoto;
             ViewFlipper friendFlipper;
@@ -335,7 +352,6 @@ public class botSelectActivity extends AppCompatActivity {
                 cv = (CardView)itemView.findViewById(R.id.friendcv);
                 friendName = (TextView)itemView.findViewById(R.id.my_name);
                 friendMail = (TextView)itemView.findViewById(R.id.friend_email);
-                friendStatus = (TextView)itemView.findViewById(R.id.friend_status);
                 friendBot = (TextView)itemView.findViewById(R.id.friendbot);
                 personPhoto = (ImageView)itemView.findViewById(R.id.friend_photo);
                 friendFlipper =(ViewFlipper)itemView.findViewById(R.id.friendFlipper);
@@ -357,7 +373,6 @@ public class botSelectActivity extends AppCompatActivity {
         public void onBindViewHolder(final RVAdapter.FriendViewHolder friendViewHolder, int i) {
             friendViewHolder.friendName.setText(myFriendList.get(i).name);
             friendViewHolder.friendMail.setText(myFriendList.get(i).email);
-            friendViewHolder.friendStatus.setText(myFriendList.get(i).status);
             friendViewHolder.friendBot.setText(myFriendList.get(i).botname);
             new ImageDownloaderTask(friendViewHolder.personPhoto).execute(myFriendList.get(i).photoLink);
             friendViewHolder.cv.setOnClickListener(new View.OnClickListener() {
@@ -487,19 +502,20 @@ public class botSelectActivity extends AppCompatActivity {
         usersref.child(email).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String status;
                 String botname;
                 String name = dataSnapshot.child("name").getValue().toString();
                 String photoLink = dataSnapshot.child("profileURL").getValue().toString().replace("\\/", "/");
-                status = (boolean)dataSnapshot.child(("online")).getValue()?"Online":"Offline";
                 if (dataSnapshot.child("mybot").getValue() == null){
                     botname = "Your friend has not bot!";
                 } else {
                     botname = dataSnapshot.child("mybot").getValue().toString();
                 }
-                myFriendList.add(new friend(name, email, status, botname, photoLink));
+                if(!email.equals(getAuth("email")))
+                myFriendList.add(new friend(name, email, botname, photoLink));
                 RVAdapter adapter = new RVAdapter(myFriendList,botSelectActivity.this);
                 rv.setAdapter(adapter);
+                //TODO : can way to insert item :
+                 //mAdapter.notifyItemInserted(mItems.size()-1)
             }
 
             @Override
@@ -543,7 +559,6 @@ public class botSelectActivity extends AppCompatActivity {
             myNameTV.setText(getAuth("name"));
             tv.animate().alpha(0.0f);
             emailMap= new HashMap<>();
-            emailMap.put("online", true);
             emailMap.put("id", getAuth("id"));
             emailMap.put("name", getAuth("name"));
             emailMap.put("profileURL", getAuth("profileURL"));
@@ -623,6 +638,12 @@ public class botSelectActivity extends AppCompatActivity {
     }
     @Override
     public void onResume(){
+        if(!newUser) {
+            botMap = new HashMap<String, Object>();
+            botMap.put("status","online");
+            botref.child(botName).updateChildren(botMap);
+            botMap = new HashMap<String, Object>();
+        }
         super.onResume();
     }
 
@@ -634,8 +655,10 @@ public class botSelectActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         if(!newUser) {
-            emailMap.put("online", true);
-            usersref.child(getAuth("email")).updateChildren(emailMap);
+            botMap = new HashMap<String, Object>();
+            botMap.put("status", "online");
+            botref.child(botName).updateChildren(botMap);
+            botMap = new HashMap<String, Object>();
         }
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -657,11 +680,10 @@ public class botSelectActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         if(!newUser) {
-            botMap.put("online",false);
+            botMap = new HashMap<String, Object>();
+            botMap.put("status", "offline");
             if(botName!=null)
             botref.child(botName).updateChildren(botMap);
-            emailMap.put("online", false);
-            usersref.child(getAuth("email")).updateChildren(emailMap);
         }
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -682,7 +704,7 @@ public class botSelectActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        emailMap.put("online", false);
-        usersref.child(getAuth("email")).updateChildren(emailMap);
+        botMap.put("status", "offline");
+        botref.child(botName).updateChildren(botMap);
     }
 }

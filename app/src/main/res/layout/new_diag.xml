@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"  android:animateLayoutChanges="true">
+    android:layout_width="match_parent" android:layout_height="match_parent"  android:animateLayoutChanges="true"
+    android:background="@drawable/login">
 
     <TextView
         android:layout_width="wrap_content"
@@ -11,7 +12,10 @@
         android:allowUndo="true"
         android:layout_above="@+id/inp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="91dp" />
+        android:layout_marginBottom="91dp"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textIsSelectable="false" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -22,7 +26,8 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
-        android:alpha="0" />
+        android:alpha="0"
+        android:textAlignment="center" />
 
     <Button
         android:layout_width="wrap_content"
@@ -34,7 +39,8 @@
         android:layout_marginTop="36dp"
         style="?android:attr/borderlessButtonStyle"
         android:textStyle="normal"
-        android:alpha="0" />
+        android:alpha="0"
+        android:textSize="15sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,5 +49,7 @@
         android:id="@+id/eTV"
         android:layout_below="@+id/diagTV"
         android:layout_centerHorizontal="true"
-        android:textColor="#ff0000" />
+        android:textColor="#ff0000"
+        android:layout_marginBottom="30dp"
+        android:textSize="15sp" />
 </RelativeLayout>
