@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="Theme.MyThemeBase" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your theme here. -->
-
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="Theme.MyTheme" parent="Theme.MyThemeBase"/>

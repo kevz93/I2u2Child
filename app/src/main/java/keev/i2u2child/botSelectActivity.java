@@ -33,6 +33,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -346,7 +347,7 @@ public class botSelectActivity extends AppCompatActivity {
             TextView friendBot;
             ImageView personPhoto;
             ViewFlipper friendFlipper;
-            Button callFriendButton;
+            ImageButton callFriendButton;
             FriendViewHolder(View itemView) {
                 super(itemView);
                 cv = (CardView)itemView.findViewById(R.id.friendcv);
@@ -355,7 +356,7 @@ public class botSelectActivity extends AppCompatActivity {
                 friendBot = (TextView)itemView.findViewById(R.id.friendbot);
                 personPhoto = (ImageView)itemView.findViewById(R.id.friend_photo);
                 friendFlipper =(ViewFlipper)itemView.findViewById(R.id.friendFlipper);
-                callFriendButton =(Button)itemView.findViewById(R.id.callfriendButton);
+                callFriendButton = (ImageButton) itemView.findViewById(R.id.callIcon);
             }
         }
         RVAdapter(List<friend> myFriendList,Context c){
@@ -579,6 +580,8 @@ public class botSelectActivity extends AppCompatActivity {
                         botName = dataSnapshot.child("mybot").getValue().toString();
                         mybotTV.setText(botName);
                         //startSocketService();
+                        botMap.put("status", "online");
+                        botref.child(botName).updateChildren(botMap);
                     }
                     else {
                         NOBOT = true;
@@ -595,7 +598,7 @@ public class botSelectActivity extends AppCompatActivity {
             });
             final CardView myBotCard = (CardView) findViewById(R.id.mybotcard);
             final ViewFlipper myBotFlipper =(ViewFlipper) findViewById(R.id.myBotFlipper);
-            Button callmybotButton = (Button) findViewById(R.id.callmybotButton); //TODO:call throuch this button , add eventlistenr
+            ImageButton callmybotButton = (ImageButton) findViewById(R.id.callmybotbutton); //TODO:call throuch this button , add eventlistenr
             callmybotButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -608,8 +611,6 @@ public class botSelectActivity extends AppCompatActivity {
             myBotCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    myBotFlipper.showNext();
                 }
             });
             LinearLayoutManager llm = new LinearLayoutManager(botSelectActivity.this); // TODO: try changing context
@@ -679,12 +680,8 @@ public class botSelectActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if(!newUser) {
-            botMap = new HashMap<String, Object>();
-            botMap.put("status", "offline");
-            if(botName!=null)
-            botref.child(botName).updateChildren(botMap);
-        }
+//        botMap.put("status", "offline");
+//        botref.child(botName).updateChildren(botMap);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
@@ -704,7 +701,5 @@ public class botSelectActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        botMap.put("status", "offline");
-        botref.child(botName).updateChildren(botMap);
     }
 }

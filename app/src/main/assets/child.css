@@ -120,7 +120,13 @@ form {
     margin-bottom: 10px;
 }
 #localVideo {
-    visibility: hidden;
+        position: absolute;
+    height: 28%;
+    top: 71%;
+    left: 38%;
+    transition: all 3s;
+    z-index: 1;
+    opacity: 0.5;
 }
 #videoContainer {
     font-size: 0;
@@ -145,4 +151,5 @@ form {
     transform: rotateY(180deg);
     transition: opacity 3s;
     width: 100%;
+    z-index: -1'
 }

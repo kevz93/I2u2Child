@@ -1,18 +1,25 @@
 package keev.i2u2child;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.http.SslError;
 import android.os.PowerManager;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 import android.webkit.ValueCallback;
+
+import com.firebase.client.Firebase;
 
 import org.xwalk.core.XWalkResourceClient;
 import org.xwalk.core.XWalkView;
@@ -20,6 +27,8 @@ import org.xwalk.core.XWalkView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,19 +58,30 @@ public class xwalkActivity extends AppCompatActivity {
     private String ArduinoPacket;
     private String roomName;
     private boolean BLUEBOOL = true;  //TODO: toggle for development
-    PowerManager pm;
-
+    private Firebase botref;
+    private final int MY_PERMISSIONS_REQUEST = 24;
+    Map<String, Object> botMap = new HashMap<String, Object>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAdapter = BluetoothAdapter.getDefaultAdapter();
+        Firebase.setAndroidContext(this);
+        botref = new Firebase("https://i2u2robot.firebaseio.com/bots/");
         //Get prev intent message :
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
             roomName = extras.getString("CALL_DATA"); // use call data if json is used in future for more options
             call_data = roomName;
         }
-        pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        botMap.put("status", "online");
+        botref.child(roomName).updateChildren(botMap);
+        botMap = new HashMap<String, Object>();
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.WRITE_SETTINGS},
+                MY_PERMISSIONS_REQUEST);
+
+
         setContentView(R.layout.activity_xwalk);
         mXWalkView = (XWalkView) findViewById(R.id.activity_main);
         resourceClient =new MyResourceClient(mXWalkView);
@@ -70,7 +90,6 @@ public class xwalkActivity extends AppCompatActivity {
         mXWalkView.load("file:///android_asset/index.html", null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // keeps screen on
        // global_context = this; //TODO: re-use later
-
         if (mAdapter == null) {
             Log.d("TAG","No bluetooth adapter available");
         }
@@ -88,6 +107,11 @@ public class xwalkActivity extends AppCompatActivity {
             mConnectThread = new ConnectThread(device);
             mConnectThread.start();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private class ConnectThread extends Thread {
@@ -265,7 +289,6 @@ public class xwalkActivity extends AppCompatActivity {
 
             @org.xwalk.core.JavascriptInterface
             public void Arduino(String s) {
-                Log.d(TAG, "OVERHERE!!!!!!!!!");
                 mConnectedThread.write(s);
             }
         }
@@ -274,6 +297,8 @@ public class xwalkActivity extends AppCompatActivity {
         super.onDestroy();
 //        mConnectedThread.cancel();
 //        mConnectThread.cancel();
-
+        mConnectedThread.write("b");
+        botMap.put("status", "offline");
+        botref.child(roomName).updateChildren(botMap);
     }
 }

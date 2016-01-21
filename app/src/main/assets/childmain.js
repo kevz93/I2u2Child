@@ -7,10 +7,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var remoteVideo = document.querySelector('#remoteVideo');
     var localVideo = document.querySelector('#localVideo');
     localVideo.volume = 0;
-    
+    var heartblinking= true;
+    var screenFlag = false;
     //var call_data = JSON.parse(Android.getCallData());
-    var call_data = 'i2u2bot1';// Android.getCallData();
-
+    var call_data = Android.getCallData();
+    setInterval(function(){
+        if(heartblinking){
+        Android.Arduino('B');
+        setTimeout(function(){Android.Arduino('b')},400);
+    }
+    },1000);
       // DOM utilities
       var makePara = function (text) {
         var p = document.createElement('p');
@@ -201,7 +207,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     getUserMedia(constraints, handleUserMedia, handleUserMediaError);
 
-
     if (location.hostname != "localhost") {
         requestTurn('https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913');
     }
@@ -272,9 +277,24 @@ document.addEventListener('DOMContentLoaded', function() {
         dataChannel.onopen = handleReceiveChannelStateChange;
         dataChannel.onclose = handleReceiveChannelStateChange;
     }
-
+    function screenToggle(){
+        screenFlag = !screenFlag;
+        screenFlag ? document.getElementsByTagName('BODY')[0].style.WebkitFilter = "brightness(2%)": 
+        document.getElementsByTagName('BODY')[0].style.WebkitFilter = "brightness(100%)";
+        
+       
+        console.log("screen Brightness changed"); 
+    }
+    
     function handleMessage(event) {
         trace(event.data);
+        if(event.data == 'screenoff')
+           screenToggle(!screenFlag);     
+    
+        if(event.data == 'heart')
+        {
+            startHeartBlink();
+        }
         if (event.data == 'snap') {
             trace('In snap');
             snapshot();
@@ -374,27 +394,31 @@ document.addEventListener('DOMContentLoaded', function() {
         remoteVideo.src = window.URL.createObjectURL(event.stream);
         remoteStream = event.stream;
         remoteVideo.style.opacity = 1;
+        heartblinking = false;
+        send('B');
     }
 
     function handleRemoteStreamRemoved(event) {
         console.log('Remote stream removed. Event: ', event);
         remoteVideo.style.opacity = 0;
+        heartblinking = true;
     }
 
     function hangup() {
-        console.log('Hanging up.');
         stop();
         sendMessage('bye');
+        console.log('Hanging up.');
 
     }
 
     function handleRemoteHangup() {
         isInitiator = true;
+         stop();
         console.log('Session terminated.');
-        stop();
     }
 
     function stop() {
+        heartblinking =true;
         dataChannel.close();
         pc.close();
         isStarted = false;
@@ -482,6 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
      function send(sendData) {
+        if(isStarted){
         trace('checking ready state before sending');
         if (dataChannel.readyState == 'open'){
             trace('Going to send something');
@@ -490,10 +515,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 dataChannel.send(JSON.stringify(sendData));
          }
             else{       
-            trace('Sending no object ');                     
+            trace('Sending data ');                     
             dataChannel.send(sendData);
+                }
         }
-        }
+    }
     }
 
     var canvas = document.createElement('canvas');
@@ -516,10 +542,12 @@ document.addEventListener('DOMContentLoaded', function() {
             SliceAndSend(imageData);  
     }
 }
-    function SliceAndSend(chunk) {
+    function SliceAndSend(chunk)
+     {
     var idata = {}; // data object to transmit over data channel
     //if (event) text = event.target.result; // on first invocation
      trace('chunk lenght :'+ chunk.length);
+     idata.snap=true;
     if (chunk.length > chunkLength) {
         idata.message = chunk.slice(0, chunkLength); // getting chunk using predefined chunk length
     } else {
@@ -527,15 +555,23 @@ document.addEventListener('DOMContentLoaded', function() {
         idata.message = chunk;
         idata.last = true;
     }
-    idata.snap= true;
     send(idata); // use JSON.stringify for chrome!
     var remainingData = chunk.slice(idata.message.length);
     if (remainingData.length) setTimeout(function () {
         SliceAndSend(remainingData); // continue transmitting
     }, 10)
-        if(idata.snap==true)
+        if(idata.last==true)
         sendingsnap = false;
-}
+    }
+
+    function startHeartBlink(){
+    var heartInterval = setInterval(function(){
+        Android.Arduino('R');
+        setTimeout(function(){Android.Arduino('b');},800);
+    },833);
+    setTimeout(function(){clearInterval(heartInterval);},2000);
+    };
+
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //--------------------------------------------------------------Viewport settings
     var viewportwidth, viewportheight;

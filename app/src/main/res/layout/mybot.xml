@@ -54,4 +54,20 @@
             android:id="@+id/my_email"
             android:layout_weight="1" />
     </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/callmybotbutton"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_call_black_48dp"
+            android:scaleType="fitCenter"
+            android:layout_weight="1" />
+    </LinearLayout>
 </LinearLayout>
