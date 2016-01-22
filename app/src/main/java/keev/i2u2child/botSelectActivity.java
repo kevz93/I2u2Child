@@ -579,7 +579,7 @@ public class botSelectActivity extends AppCompatActivity {
                     if(dataSnapshot.child("mybot").getValue()!=null) {
                         botName = dataSnapshot.child("mybot").getValue().toString();
                         mybotTV.setText(botName);
-                        //startSocketService();
+                        startSocketService();
                         botMap.put("status", "online");
                         botref.child(botName).updateChildren(botMap);
                     }
@@ -634,7 +634,7 @@ public class botSelectActivity extends AppCompatActivity {
         }catch(JSONException e){
             // catch error--less likely
         }
-        ServiceIntent.putExtra(USER_DATA, obj.toString());
+        ServiceIntent.putExtra(CALL_DATA, obj.toString());
         this.startService(ServiceIntent);
     }
     @Override

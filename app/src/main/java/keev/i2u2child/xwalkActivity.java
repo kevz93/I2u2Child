@@ -71,9 +71,10 @@ public class xwalkActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
             roomName = extras.getString("CALL_DATA"); // use call data if json is used in future for more options
+            Log.d(TAG, "Room in service : " + extras.getString("CALL_DATA"));
             call_data = roomName;
         }
-        botMap.put("status", "online");
+        botMap.put("status", "busy");
         botref.child(roomName).updateChildren(botMap);
         botMap = new HashMap<String, Object>();
 

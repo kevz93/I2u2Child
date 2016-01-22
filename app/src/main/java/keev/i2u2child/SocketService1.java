@@ -7,16 +7,18 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.IO.Options;
-import com.github.nkzawa.socketio.client.Socket;
-import com.github.nkzawa.socketio.client.SocketIOException;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -26,7 +28,10 @@ import java.net.URISyntaxException;
 public class SocketService1 extends Service {
     private final String TAG="SocketService1";
     private JSONObject user_data;
-    private Socket socket;
+    private Firebase usersref, botref;
+    Map<String, Object> emailMap = new HashMap<String, Object>();
+    Map<String, Object> botMap = new HashMap<String, Object>();
+
     private final IBinder mBinder = new MyBinder();
     public class MyBinder extends Binder {
         SocketService1 getService() {
@@ -41,71 +46,46 @@ public class SocketService1 extends Service {
         Log.d(TAG, "onCreate");
 
     }
+
     Bundle extras;
+    String roomName;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //TODO do something useful
+        Firebase.setAndroidContext(this);
+        usersref = new Firebase("https://i2u2robot.firebaseio.com/users/");
+        botref = new Firebase("https://i2u2robot.firebaseio.com/bots/");
         Log.d(TAG, "onStartCommand");
         extras = intent.getExtras();
-
+        try {
+            roomName = new JSONObject(extras.getString("CALL_DATA")).getString("botName");
+        } catch (JSONException e) {
+            //
+        }
         Thread d = new Thread(new Runnable() {
             @Override
             public void run() {
             }
         });
         d.start();
-
-        Options opts = new Options();
-        opts.forceNew = true;
-        opts.reconnection = true;
-        try {
-            socket = IO.socket("http://52.88.42.61:7070", opts);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+        botref.child(roomName).child("incoming").addValueEventListener(new ValueEventListener() {
             @Override
-            public void call(Object... args) {
-                Log.d(getClass().getCanonicalName(), "Connected to server");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == false) {
+                    // Think of some handle here =P
+                } else {
+                    Intent xwalk = new Intent(SocketService1.this, xwalkActivity.class);
+                    xwalk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    xwalk.putExtra("CALL_DATA", roomName);
+                    startActivity(xwalk);
+                }
             }
 
-        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
-
             @Override
-            public void call(Object... arg0) {
-                Log.d(getClass().getCanonicalName(), "Disconnected from server");
-            }
+            public void onCancelled(FirebaseError firebaseError) {
 
-        }).on("friendcall", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                Log.d(TAG, "Handling friendcall");
-                try {
-                    String callFrom = data.getString("from");
-                    Log.d(TAG, "Call from : " + callFrom);
-                } catch (JSONException e) {
-                    Log.d(TAG, "friend call object cannot be parsed");
-                }
-                Intent serviceToXwalk = new Intent(SocketService1.this, xwalkActivity.class);
-                try {
-                    serviceToXwalk.putExtra("CALL_DATA", user_data.getString("botName"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                startActivity(serviceToXwalk);
             }
         });
-                    if(extras!=null){
-                        try {
-                            user_data = new JSONObject(extras.getString("USER_DATA"));
-                            socket.emit("giveMeID", user_data.getString("email"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-        socket.connect();
-
         return Service.START_REDELIVER_INTENT;
     }
 
@@ -119,7 +99,6 @@ public class SocketService1 extends Service {
     @Override
     public void onDestroy(){
         super.onDestroy();
-        socket.disconnect();
         Log.d(TAG,"onDestroy");
     }
 
