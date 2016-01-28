@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
     socket.on('join', function(room) {
         console.log('Another peer made a request to join room ' + room);
         if(!blockMessage)
-        handleRemoteHangup();
+        isInitiator = true;   // only for child this line is kept.
         isChannelReady = true;
         console.log(' isChannelReady updated -->', isChannelReady);
 
@@ -293,7 +293,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
         if(event.data == 'heart')
         {
-            startHeartBlink();
+            Android.Arduino('R');
+            //startHeartBlink();
         }
         if (event.data == 'snap') {
             trace('In snap');
@@ -395,7 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
         remoteStream = event.stream;
         remoteVideo.style.opacity = 1;
         heartblinking = false;
-        send('B');
+        Android.Arduino('B');
     }
 
     function handleRemoteStreamRemoved(event) {
@@ -422,6 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dataChannel.close();
         pc.close();
         isStarted = false;
+        isChannelReady = false; // added by kevz93
         remoteVideo.style.opacity = 0;
         // isAudioMuted = false;
         // isVideoMuted = false;

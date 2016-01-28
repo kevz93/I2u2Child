@@ -25,8 +25,8 @@ public class blueActivity extends AppCompatActivity {
     TextView myTV;
     BluetoothAdapter mBluetoothAdapter;
 
-    boolean botFound=false;
-    boolean  botPaired = false;
+    boolean botFound = false;
+    boolean botPaired = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

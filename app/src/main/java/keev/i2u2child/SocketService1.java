@@ -62,12 +62,15 @@ public class SocketService1 extends Service {
         } catch (JSONException e) {
             //
         }
-        Thread d = new Thread(new Runnable() {
-            @Override
-            public void run() {
-            }
-        });
-        d.start();
+//        Thread d = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//            }
+//        });
+//        d.start();
+        botMap.put("status", "online");
+        botref.child(roomName).updateChildren(botMap);
+        botMap = new HashMap<String, Object>();
         botref.child(roomName).child("incoming").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -99,6 +102,10 @@ public class SocketService1 extends Service {
     @Override
     public void onDestroy(){
         super.onDestroy();
+        botMap = new HashMap<String, Object>();
+        botMap.put("status", "offline");
+        botref.child(roomName).updateChildren(botMap);
+        botMap = new HashMap<String, Object>();
         Log.d(TAG,"onDestroy");
     }
 

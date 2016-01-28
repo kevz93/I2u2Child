@@ -159,6 +159,7 @@ public class botSelectActivity extends AppCompatActivity {
                 if (nameAvail) {
                     botName = inpName.getText().toString();
                     botMap.put("owner", getAuth("name"));
+                    botMap.put("incoming", false);
                     botMap.put("status", "online");
                     botref.child(botName).updateChildren(botMap);
                     emailMap.put("mybot", botName);
