@@ -1,5 +1,6 @@
 package keev.i2u2child;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -137,14 +139,12 @@ public class botSelectActivity extends AppCompatActivity {
             public void onCancelled(FirebaseError e) {
                     Log.d(TAG,"Firebase error : "+ e);
             }
-
         });
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState){
-            super.onPostCreate(savedInstanceState);
-
+        super.onPostCreate(savedInstanceState);
         }
 
     public void newDialogue(){
@@ -153,6 +153,7 @@ public class botSelectActivity extends AppCompatActivity {
         tv.animate().alpha(1.0f);
         goButton.animate().alpha(1.0f);
         inpName.animate().alpha(1.0f);
+        showSoftKeyboard();
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,6 +172,7 @@ public class botSelectActivity extends AppCompatActivity {
                     usersref.child(getAuth("email")).child("friends").updateChildren(emailMap);
                     emailMap= new HashMap<String, Object>();
                     newUser = false;
+                    hideSoftKeyboard();
                     foo = new startMain();
                 }
             }
@@ -233,16 +235,35 @@ public class botSelectActivity extends AppCompatActivity {
         }
         return "null";
     }
+
+    public void showSoftKeyboard() {
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void hideSoftKeyboard() {
+        try {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void addAccess(){
         vf.showNext();
         final EditText newMail = (EditText) findViewById(R.id.newMail);
         final TextView accessTV = (TextView) findViewById(R.id.accessTV);
         final Button addBotButton =(Button) findViewById(R.id.addBotbutton);
+        showSoftKeyboard();
         botMap = new HashMap<String, Object>();
         emailMap = new HashMap<String, Object>();
         accessTV.setText("Enter email-ID of your bud xD.");
         accessTV.animate().alpha(1f);
-
+        addBotButton.setEnabled(false);
         newMail.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 accessTV.animate().alpha(0f);
@@ -317,6 +338,7 @@ public class botSelectActivity extends AppCompatActivity {
                     public void onCancelled(FirebaseError firebaseError) {
                     }
                 });
+                hideSoftKeyboard();
                 vf.showPrevious();
             }
         });
@@ -550,6 +572,7 @@ public class botSelectActivity extends AppCompatActivity {
 
     private class startMain{
         private startMain(){
+            hideSoftKeyboard();
             rv.setHasFixedSize(false); // true only if the size is fixed -- better performance
             vf.showNext();
             final TextView mybotTV = (TextView) findViewById(R.id.my_bot);
