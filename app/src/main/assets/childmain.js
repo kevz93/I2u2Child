@@ -396,13 +396,15 @@ document.addEventListener('DOMContentLoaded', function() {
         remoteStream = event.stream;
         remoteVideo.style.opacity = 1;
         heartblinking = false;
-        Android.Arduino('B');
+        setTimeout(function(){ Android.Arduino('B'); },400);
+       
     }
 
     function handleRemoteStreamRemoved(event) {
         console.log('Remote stream removed. Event: ', event);
         remoteVideo.style.opacity = 0;
         heartblinking = true;
+        Android.endCall();
     }
 
     function hangup() {
@@ -419,15 +421,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function stop() {
-        heartblinking =true;
+        heartblinking = true;
         dataChannel.close();
         pc.close();
         isStarted = false;
         isChannelReady = false; // added by kevz93
         remoteVideo.style.opacity = 0;
-        // isAudioMuted = false;
-        // isVideoMuted = false;
         pc = null;
+        window.close();
     }
 
     ///////////////////////////////////////////
@@ -587,7 +588,17 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(function () { 
         if(isStarted&&!sendingsnap){
         var AndroidPacket = Android.getArduinoPacket(); // Retrieve packet from Arduino
-        send(AndroidPacket);  
+        var pac = [];
+        for(int i=0;i<AndroidPacket.length;i++){
+            if(AndroidPacket[i]=='{'){
+                var j=0;
+                while(AndroidPacket[i]!='}'){
+                pac[j++]=AndroidPacket[i++];
+                }
+            }
+        }
+        send(pac);  
+        pac = [];
     }
     }, 1000);
 

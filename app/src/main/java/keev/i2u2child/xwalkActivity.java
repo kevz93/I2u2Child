@@ -286,8 +286,16 @@ public class xwalkActivity extends AppCompatActivity {
             public void Arduino(String s) {
                 mConnectedThread.write(s);
             }
+
+            public void endCall() {
+                finish();
+            }
         }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
     @Override
     protected void onStop() {
         super.onStop();
