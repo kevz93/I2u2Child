@@ -54,7 +54,7 @@ public class xwalkActivity extends AppCompatActivity {
     public ConnectedThread mConnectedThread;
     private String ArduinoPacket;
     private String roomName;
-    private boolean BLUEBOOL = false;  //TODO: toggle for development
+    private boolean BLUEBOOL = true;  //TODO: toggle for development
     private boolean BCONNECTED = false;
     private Firebase botref;
     private final int MY_PERMISSIONS_REQUEST = 24;
@@ -75,6 +75,7 @@ public class xwalkActivity extends AppCompatActivity {
             call_data = roomName;
         }
         botMap.put("status", "busy");
+        botMap.put("incoming", false);
         botref.child(roomName).updateChildren(botMap);
         botMap = new HashMap<String, Object>();
 

@@ -15,7 +15,7 @@ android {
         applicationId "keev.i2u2child"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 20
+        versionCode 24
         versionName "1.4"
         signingConfig signingConfigs.config
     }

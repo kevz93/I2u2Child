@@ -399,7 +399,7 @@ public class botSelectActivity extends AppCompatActivity {
             TextView friendBot;
             ImageView personPhoto;
             ViewFlipper friendFlipper;
-            ImageButton callFriendButton;
+
             FriendViewHolder(View itemView) {
                 super(itemView);
                 cv = (CardView)itemView.findViewById(R.id.friendcv);
@@ -408,7 +408,7 @@ public class botSelectActivity extends AppCompatActivity {
                 friendBot = (TextView)itemView.findViewById(R.id.friendbot);
                 personPhoto = (ImageView)itemView.findViewById(R.id.friend_photo);
                 friendFlipper =(ViewFlipper)itemView.findViewById(R.id.friendFlipper);
-                callFriendButton = (ImageButton) itemView.findViewById(R.id.callIcon);
+                //callFriendButton = (ImageButton) itemView.findViewById(R.id.callIcon);
             }
         }
         RVAdapter(List<friend> myFriendList,Context c){
@@ -434,15 +434,15 @@ public class botSelectActivity extends AppCompatActivity {
                     friendViewHolder.friendFlipper.showNext();
                 }
             });
-            friendViewHolder.callFriendButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    xwalkActivityIntent = new Intent(botSelectActivity.this, xwalkActivity.class);
-                    String roomName = botName;
-                    xwalkActivityIntent.putExtra(CALL_DATA, roomName);
-                    startActivity(xwalkActivityIntent);
-                }
-            });
+//            friendViewHolder.callFriendButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    xwalkActivityIntent = new Intent(botSelectActivity.this, xwalkActivity.class);
+//                    String roomName = botName;
+//                    xwalkActivityIntent.putExtra(CALL_DATA, roomName);
+//                    startActivity(xwalkActivityIntent);
+//                }
+//            });
             setAnimation(friendViewHolder.cv, i);
         }
 
