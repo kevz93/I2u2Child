@@ -14,6 +14,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.AnimationDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -118,28 +121,54 @@ public class botSelectActivity extends AppCompatActivity {
                 android.R.anim.fade_in));
         vf.setOutAnimation(AnimationUtils.loadAnimation(this,
                 android.R.anim.fade_out));
+
+        final ImageView loadingIcon = (ImageView) findViewById(R.id.loadingicon);
+
+        loadingIcon.setBackgroundResource(R.drawable.loadinganimation);
+        final AnimationDrawable loadingViewAnim = (AnimationDrawable) loadingIcon.getBackground();
+        loadingViewAnim.start();
+
+
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-        usersref.child(getAuth("email")).child("mybot").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.getValue() == null) {
-                    Log.d(TAG, "null");
-                    newUser = true;
-                    newDialogue();
-                } else {
-                    Log.d(TAG, "Not null");
-                    newUser = false;
-                    Log.d(TAG, snapshot.toString());
-                    foo = new startMain();
+        if (isNetworkAvailable()) {
+            usersref.child(getAuth("email")).child("mybot").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.getValue() == null) {
+                        Log.d(TAG, "null");
+                        newUser = true;
+                        loadingIcon.setVisibility(View.GONE);
+                        loadingViewAnim.stop();
+                        newDialogue();
+                    } else {
+                        Log.d(TAG, "Not null");
+                        newUser = false;
+                        Log.d(TAG, snapshot.toString());
+                        loadingIcon.setVisibility(View.GONE);
+                        loadingViewAnim.stop();
+                        foo = new startMain();
+                    }
                 }
-              }
-            @Override
-            public void onCancelled(FirebaseError e) {
-                    Log.d(TAG,"Firebase error : "+ e);
-            }
-        });
+
+                @Override
+                public void onCancelled(FirebaseError e) {
+                    Log.d(TAG, "Firebase error : " + e);
+                }
+            });
+        } else {
+            tv.setText("Seems like your Internet connectivity is down. Connect and restart app =D");
+        }
+    }
+
+    // Check if Network is available
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override

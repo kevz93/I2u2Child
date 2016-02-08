@@ -101,7 +101,6 @@ public class SocketService1 extends Service {
 
     @Override
     public void onDestroy(){
-        super.onDestroy();
         botMap = new HashMap<String, Object>();
         botMap.put("status", "offline");
         botref.child(roomName).updateChildren(botMap);

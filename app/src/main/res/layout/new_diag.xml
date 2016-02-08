@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"  android:animateLayoutChanges="true"
-    android:background="@drawable/login">
+    android:background="#fff">
 
     <TextView
         android:layout_width="wrap_content"
@@ -10,10 +10,10 @@
         android:id="@+id/diagTV"
         android:alpha="0"
         android:allowUndo="true"
+        android:textColor="@color/cardview_dark_background"
         android:layout_above="@+id/inp"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="91dp"
-        android:textColor="#ffffff"
         android:textSize="20sp"
         android:textIsSelectable="false" />
 
@@ -52,4 +52,11 @@
         android:textColor="#ff0000"
         android:layout_marginBottom="30dp"
         android:textSize="15sp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loadingicon"
+        android:layout_alignTop="@+id/inp"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

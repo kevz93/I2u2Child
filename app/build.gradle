@@ -15,7 +15,7 @@ android {
         applicationId "keev.i2u2child"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 19
+        versionCode 20
         versionName "1.4"
         signingConfig signingConfigs.config
     }
@@ -54,7 +54,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.firebaseui:firebase-ui:0.3.0'
-    compile 'com.firebase:firebase-client-android:2.5.0+'
+    compile 'com.firebase:firebase-client-android:2.5.0'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.google.android.gms:play-services-auth:8.4.0'
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
@@ -64,5 +64,5 @@ dependencies {
     //        // excluding org.json which is provided by Android
     //        exclude group: 'org.json', module: 'json'
     //    }
-    compile 'com.github.nkzawa:socket.io-client:0.6.0'
+    //compile 'com.github.nkzawa:socket.io-client:0.6.0'
 }

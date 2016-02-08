@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.webkit.ValueCallback;
+import android.widget.ImageView;
 
 import com.firebase.client.Firebase;
 
@@ -52,7 +54,7 @@ public class xwalkActivity extends AppCompatActivity {
     public ConnectedThread mConnectedThread;
     private String ArduinoPacket;
     private String roomName;
-    private boolean BLUEBOOL = true;  //TODO: toggle for development
+    private boolean BLUEBOOL = false;  //TODO: toggle for development
     private boolean BCONNECTED = false;
     private Firebase botref;
     private final int MY_PERMISSIONS_REQUEST = 24;
@@ -63,6 +65,7 @@ public class xwalkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         Firebase.setAndroidContext(this);
+
         botref = new Firebase("https://i2u2robot.firebaseio.com/bots/");
         //Get prev intent message :
         Bundle extras = getIntent().getExtras();
@@ -288,31 +291,41 @@ public class xwalkActivity extends AppCompatActivity {
             }
 
             public void endCall() {
+                if (BLUE) {
+                    mConnectedThread.write("b");
+                    mConnectedThread.cancel();
+                    BLUE = false;
+                }
                 finish();
             }
         }
 
     @Override
     public void onBackPressed() {
+        if (BLUE) {
+            mConnectedThread.write("b");
+            mConnectedThread.cancel();
+            BLUE = false;
+        }
         finish();
     }
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d(TAG, "onstop()");
         if (BLUE) {
             mConnectedThread.write("b");
             mConnectedThread.cancel();
         }
-        botMap.put("status", "online");
-        botref.child(roomName).updateChildren(botMap);
-        botMap = new HashMap<String, Object>();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        mConnectThread.cancel();
-
-
+        Log.d(TAG, "onDestroy()");
+        if (BLUE) {
+            mConnectedThread.write("b");
+            mConnectedThread.cancel();
+        }
     }
 }

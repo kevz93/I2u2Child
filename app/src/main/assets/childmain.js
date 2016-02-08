@@ -411,6 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
         stop();
         sendMessage('bye');
         console.log('Hanging up.');
+        Android.endCall();
 
     }
 
@@ -418,6 +419,7 @@ document.addEventListener('DOMContentLoaded', function() {
         isInitiator = true;
          stop();
         console.log('Session terminated.');
+        
     }
 
     function stop() {
@@ -580,26 +582,44 @@ document.addEventListener('DOMContentLoaded', function() {
     var viewportwidth, viewportheight;
     if (typeof window.innerWidth != 'undefined') {
         viewportwidth = window.innerWidth,
-            viewportheight = window.innerHeight
+        viewportheight = window.innerHeight
     }
-    console.log('viewport height: ' + viewportheight +'::viewportwidth: '+ viewportwidth);
+    //console.log('viewport height: ' + viewportheight +'::viewportwidth: '+ viewportwidth);
     // document.getElementById("videoContainer").style.width = viewportwidth + 'px';
     // document.getElementById("videoContainer").style.height = viewportheight + "px";
     setInterval(function () { 
         if(isStarted&&!sendingsnap){
-        var AndroidPacket = Android.getArduinoPacket(); // Retrieve packet from Arduino
-        var pac = [];
-        for(int i=0;i<AndroidPacket.length;i++){
-            if(AndroidPacket[i]=='{'){
-                var j=0;
-                while(AndroidPacket[i]!='}'){
-                pac[j++]=AndroidPacket[i++];
-                }
-            }
-        }
-        send(pac);  
+        var AndroidPacket = {};// Retrieve packet from Arduino
+        AndroidPacket.calib = Android.getArduinoPacket(); 
+        send(AndroidPacket);  
         pac = [];
     }
     }, 1000);
-
+    //------------------------------------------------------------------Draggable Vid-------------------
+    $.fn.draggable = function() {
+     var offset = null;
+     var start = function(e) {
+     var orig = e.originalEvent;
+     var pos = $(this).position();
+     offset = {
+      x: orig.changedTouches[0].pageX - pos.left,
+      y: orig.changedTouches[0].pageY - pos.top
+     };
+     };
+    var moveMe = function(e) {
+    e.preventDefault();
+    var orig = e.originalEvent;
+    $(this).css({
+      top: orig.changedTouches[0].pageY - offset.y,
+      left: orig.changedTouches[0].pageX - offset.x
+     });
+     };
+  this.bind("touchstart", start);
+  this.bind("touchmove", moveMe);
+    };
+ 
+$("#localVideo").draggable();
+ $(document).ready(function() { 
+    $("#endcall").click(hangup);
+ });
 });
