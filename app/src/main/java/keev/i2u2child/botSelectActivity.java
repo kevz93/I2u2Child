@@ -632,9 +632,9 @@ public class botSelectActivity extends AppCompatActivity {
                     if(dataSnapshot.child("mybot").getValue()!=null) {
                         botName = dataSnapshot.child("mybot").getValue().toString();
                         mybotTV.setText(botName);
-                        startSocketService();
-                        botMap.put("status", "online");
-                        botref.child(botName).updateChildren(botMap);
+                        startSocketService(); // bot is made online here in SocketServie1.class
+//                        botMap.put("status", "online");
+//                        botref.child(botName).updateChildren(botMap);
                     }
                     else {
                         NOBOT = true;
